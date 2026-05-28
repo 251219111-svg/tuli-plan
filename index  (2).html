@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兔力计划 - 员工积分运营平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4080FF',
+            secondary: '#FF7D00',
+            success: '#00B42A',
+            purple: '#722ED1',
+            light: '#F5F7FA'
+          },
+          boxShadow: {
+            card: '0 2px 12px 0 rgba(0, 0, 0, 0.06)',
+            btn: '0 2px 6px 0 rgba(64, 128, 255, 0.3)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    .page { display: none; }
+    .page.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 99;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show { display: flex; }
+    .icon-item:active { transform: scale(0.95); transition: transform 0.15s; }
+    .btn:active { opacity: 0.9; transform: scale(0.98); transition: all 0.15s; }
+  </style>
+</head>
+<body class="bg-light font-sans">
+<div id="app" class="max-w-md mx-auto pb-20 relative min-h-screen bg-light">
+
+  <!-- 顶部导航栏 -->
+  <div class="bg-white shadow-card px-4 py-3 flex items-center sticky top-0 z-20">
+    <i class="fa fa-arrow-left mr-3 text-lg text-gray-600 cursor-pointer" onclick="goPage('home')"></i>
+    <div class="font-bold text-lg flex-1 text-center text-gray-800" id="page-title">兔力计划</div>
+    <i class="fa fa-bell text-lg text-gray-600 cursor-pointer" onclick="goPage('notice')"></i>
+  </div>
+
+  <!-- 页面1：首页 -->
+  <div id="page-home" class="page active px-4 pt-5">
+    <!-- 用户信息卡片 -->
+    <div class="bg-gradient-to-r from-primary to-purple rounded-2xl shadow-card p-5 flex items-center mb-6 text-white">
+      <img src="https://picsum.photos/80/80" class="w-14 h-14 rounded-full object-cover border-2 border-white/50">
+      <div class="ml-4 flex-1">
+        <div class="font-bold text-xl">张三 · 产品部</div>
+        <div class="text-white/90 mt-1">当前兔力值：<span class="text-xl font-bold">1280</span></div>
+      </div>
+      <div class="bg-white/20 rounded-full px-3 py-1 text-sm font-bold">Lv.3</div>
+    </div>
+
+    <!-- 核心功能图标区 -->
+    <div class="grid grid-cols-4 gap-3 text-center mb-7">
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('task')">
+        <div class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center mb-2 shadow-card">
+          <i class="fa fa-calendar-check-o text-primary text-2xl"></i>
+        </div>
+        <div class="text-sm text-gray-700">每日签到</div>
+      </div>
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('task')">
+        <div class="w-14 h-14 rounded-full bg-orange-50 flex items-center justify-center mb-2 shadow-card">
+          <i class="fa fa-trophy text-secondary text-2xl"></i>
+        </div>
+        <div class="text-sm text-gray-700">任务中心</div>
+      </div>
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('shop')">
+        <div class="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center mb-2 shadow-card">
+          <i class="fa fa-gift text-success text-2xl"></i>
+        </div>
+        <div class="text-sm text-gray-700">积分兑换</div>
+      </div>
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('rank')">
+        <div class="w-14 h-14 rounded-full bg-purple-50 flex items-center justify-center mb-2 shadow-card">
+          <i class="fa fa-line-chart text-purple text-2xl"></i>
+        </div>
+        <div class="text-sm text-gray-700">排行榜</div>
+      </div>
+    </div>
+
+    <!-- 更多功能入口 -->
+    <div class="grid grid-cols-4 gap-3 text-center mb-7">
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('collect')">
+        <div class="w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center mb-1 shadow-card">
+          <i class="fa fa-book text-pink-500 text-xl"></i>
+        </div>
+        <div class="text-xs text-gray-600">兔兔图鉴</div>
+      </div>
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('feed')">
+        <div class="w-12 h-12 rounded-full bg-cyan-50 flex items-center justify-center mb-1 shadow-card">
+          <i class="fa fa-picture-o text-cyan-500 text-xl"></i>
+        </div>
+        <div class="text-xs text-gray-600">晒图动态</div>
+      </div>
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('exchange')">
+        <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mb-1 shadow-card">
+          <i class="fa fa-exchange text-amber-500 text-xl"></i>
+        </div>
+        <div class="text-xs text-gray-600">交换广场</div>
+      </div>
+      <div class="icon-item flex flex-col items-center cursor-pointer" onclick="goPage('user')">
+        <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-1 shadow-card">
+          <i class="fa fa-user text-gray-500 text-xl"></i>
+        </div>
+        <div class="text-xs text-gray-600">个人中心</div>
+      </div>
+    </div>
+
+    <!-- 今日任务 -->
+    <div class="mb-6">
+      <div class="flex justify-between items-center mb-3">
+        <div class="font-bold text-lg text-gray-800">今日任务</div>
+        <div class="text-primary text-sm cursor-pointer" onclick="goPage('task')">查看全部 <i class="fa fa-angle-right"></i></div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 space-y-4">
+        <div class="flex items-center">
+          <i class="fa fa-check-circle text-success text-xl mr-3"></i>
+          <div class="flex-1 text-gray-700">每日签到</div>
+          <div class="text-secondary font-semibold">+20 兔力</div>
+        </div>
+        <div class="flex items-center cursor-pointer" onclick="goPage('feed')">
+          <i class="fa fa-circle-o text-gray-300 text-xl mr-3"></i>
+          <div class="flex-1 text-gray-700">发布晒图动态</div>
+          <div class="text-secondary font-semibold">+50 兔力</div>
+        </div>
+        <div class="flex items-center cursor-pointer" onclick="goPage('feed')">
+          <i class="fa fa-circle-o text-gray-300 text-xl mr-3"></i>
+          <div class="flex-1 text-gray-700">点赞/评论动态</div>
+          <div class="text-secondary font-semibold">+20 兔力</div>
+        </div>
+        <div class="flex items-center text-xs text-gray-500">
+          <i class="fa fa-info-circle text-primary mr-2"></i>
+          每日积分上限：100 兔力
+        </div>
+      </div>
+    </div>
+
+    <!-- 热门兑换 -->
+    <div class="mb-6">
+      <div class="flex justify-between items-center mb-3">
+        <div class="font-bold text-lg text-gray-800">热门兑换</div>
+        <div class="text-primary text-sm cursor-pointer" onclick="goPage('shop')">更多商品 <i class="fa fa-angle-right"></i></div>
+      </div>
+      <div class="flex space-x-4 overflow-x-auto pb-2">
+        <div class="w-32 bg-white rounded-2xl shadow-card p-3 flex-shrink-0 cursor-pointer icon-item" onclick="goPage('shop')">
+          <img src="https://picsum.photos/120/120?1" class="w-full h-24 object-cover rounded-xl mb-2">
+          <div class="text-sm text-gray-800 truncate">经典兔兔摆件</div>
+          <div class="text-secondary font-bold text-sm mt-1">800 兔力</div>
+        </div>
+        <div class="w-32 bg-white rounded-2xl shadow-card p-3 flex-shrink-0 cursor-pointer icon-item" onclick="goPage('shop')">
+          <img src="https://picsum.photos/120/120?5" class="w-full h-24 object-cover rounded-xl mb-2">
+          <div class="text-sm text-gray-800 truncate">半天调休假</div>
+          <div class="text-secondary font-bold text-sm mt-1">300 兔力</div>
+        </div>
+        <div class="w-32 bg-white rounded-2xl shadow-card p-3 flex-shrink-0 cursor-pointer icon-item" onclick="openLottery()">
+          <img src="https://picsum.photos/120/120?3" class="w-full h-24 object-cover rounded-xl mb-2">
+          <div class="text-sm text-gray-800 truncate">隐藏款抽奖券</div>
+          <div class="text-secondary font-bold text-sm mt-1">200 兔力</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面2：任务中心 -->
+  <div id="page-task" class="page px-4 pt-5">
+    <div class="bg-white rounded-2xl shadow-card p-5 mb-5">
+      <div class="text-lg font-bold text-gray-800 mb-4">每日签到</div>
+      <div class="grid grid-cols-7 gap-2 text-center mb-4">
+        <div class="text-gray-400 text-sm">一</div><div class="text-gray-400 text-sm">二</div><div class="text-gray-400 text-sm">三</div>
+        <div class="text-gray-400 text-sm">四</div><div class="text-gray-400 text-sm">五</div><div class="text-gray-400 text-sm">六</div>
+        <div class="text-gray-400 text-sm">日</div>
+        <div class="bg-success/10 rounded-lg p-2 text-success font-semibold">已签</div>
+        <div class="bg-light rounded-lg p-2 text-gray-600">5</div><div class="bg-light rounded-lg p-2 text-gray-600">6</div>
+        <div class="bg-light rounded-lg p-2 text-gray-600">7</div><div class="bg-light rounded-lg p-2 text-gray-600">8</div>
+        <div class="bg-light rounded-lg p-2 text-gray-600">9</div><div class="bg-light rounded-lg p-2 text-gray-600">10</div>
+      </div>
+      <button class="btn w-full bg-secondary text-white py-3 rounded-xl font-bold shadow-btn">立即签到 +20 兔力</button>
+    </div>
+
+    <div class="font-bold text-lg text-gray-800 mb-3">每日任务</div>
+    <div class="space-y-3 mb-5">
+      <div class="bg-white rounded-2xl shadow-card p-4 cursor-pointer icon-item" onclick="goPage('feed')">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">发布晒图动态</div>
+          <div class="text-secondary font-semibold">+50 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">进度：0/1</div>
+          <button class="btn bg-primary text-white px-4 py-1.5 rounded-lg text-sm shadow-btn">去完成</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 cursor-pointer icon-item" onclick="goPage('feed')">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">点赞3条同事动态</div>
+          <div class="text-secondary font-semibold">+10 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">进度：0/3</div>
+          <button class="btn bg-primary text-white px-4 py-1.5 rounded-lg text-sm shadow-btn">去完成</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 cursor-pointer icon-item" onclick="goPage('feed')">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">评论1条动态</div>
+          <div class="text-secondary font-semibold">+10 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">进度：0/1</div>
+          <button class="btn bg-primary text-white px-4 py-1.5 rounded-lg text-sm shadow-btn">去完成</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="font-bold text-lg text-gray-800 mb-3">每周/月度任务</div>
+    <div class="space-y-3">
+      <div class="bg-white rounded-2xl shadow-card p-4">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">参与部门活动</div>
+          <div class="text-secondary font-semibold">+30 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">进度：0/1</div>
+          <button class="btn bg-primary text-white px-4 py-1.5 rounded-lg text-sm shadow-btn">去完成</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">提交合理化建议</div>
+          <div class="text-secondary font-semibold">+50 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">进度：0/1</div>
+          <button class="btn bg-primary text-white px-4 py-1.5 rounded-lg text-sm shadow-btn">去完成</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">跨部门协作1次</div>
+          <div class="text-secondary font-semibold">+40 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">进度：0/1</div>
+          <button class="btn bg-primary text-white px-4 py-1.5 rounded-lg text-sm shadow-btn">去完成</button>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4">
+        <div class="flex justify-between mb-2">
+          <div class="font-medium text-gray-800">月度全勤奖励</div>
+          <div class="text-secondary font-semibold">+100 兔力</div>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-sm text-gray-500">每月结算</div>
+          <button class="btn bg-gray-200 text-gray-600 px-4 py-1.5 rounded-lg text-sm">已结算</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面3：积分商城 -->
+  <div id="page-shop" class="page px-4 pt-5">
+    <div class="font-bold text-lg text-gray-800 mb-4">积分商城</div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white rounded-2xl shadow-card p-3 icon-item cursor-pointer">
+        <img src="https://picsum.photos/200/200?1" class="w-full h-32 object-cover rounded-xl mb-3">
+        <div class="text-gray-800 text-sm truncate">经典兔兔摆件</div>
+        <div class="text-secondary font-bold mt-1">800 兔力</div>
+        <button class="btn w-full mt-3 bg-primary text-white py-2 rounded-lg text-sm shadow-btn">立即兑换</button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-3 icon-item cursor-pointer">
+        <img src="https://picsum.photos/200/200?2" class="w-full h-32 object-cover rounded-xl mb-3">
+        <div class="text-gray-800 text-sm truncate">限定款徽章</div>
+        <div class="text-secondary font-bold mt-1">500 兔力</div>
+        <button class="btn w-full mt-3 bg-primary text-white py-2 rounded-lg text-sm shadow-btn">立即兑换</button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-3 icon-item cursor-pointer">
+        <img src="https://picsum.photos/200/200?5" class="w-full h-32 object-cover rounded-xl mb-3">
+        <div class="text-gray-800 text-sm truncate">半天调休假</div>
+        <div class="text-secondary font-bold mt-1">300 兔力</div>
+        <button class="btn w-full mt-3 bg-primary text-white py-2 rounded-lg text-sm shadow-btn">立即兑换</button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-3 icon-item cursor-pointer">
+        <img src="https://picsum.photos/200/200?6" class="w-full h-32 object-cover rounded-xl mb-3">
+        <div class="text-gray-800 text-sm truncate">迟到豁免卡</div>
+        <div class="text-secondary font-bold mt-1">200 兔力</div>
+        <button class="btn w-full mt-3 bg-primary text-white py-2 rounded-lg text-sm shadow-btn">立即兑换</button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-3 icon-item cursor-pointer" onclick="openLottery()">
+        <img src="https://picsum.photos/200/200?3" class="w-full h-32 object-cover rounded-xl mb-3">
+        <div class="text-gray-800 text-sm truncate">隐藏款抽奖券</div>
+        <div class="text-secondary font-bold mt-1">200 兔力</div>
+        <button class="btn w-full mt-3 bg-secondary text-white py-2 rounded-lg text-sm shadow-btn">立即兑换</button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-3 icon-item cursor-pointer">
+        <img src="https://picsum.photos/200/200?4" class="w-full h-32 object-cover rounded-xl mb-3">
+        <div class="text-gray-800 text-sm truncate">定制头像框</div>
+        <div class="text-secondary font-bold mt-1">300 兔力</div>
+        <button class="btn w-full mt-3 bg-primary text-white py-2 rounded-lg text-sm shadow-btn">立即兑换</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面4：图鉴收藏 -->
+  <div id="page-collect" class="page px-4 pt-5">
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-5 flex justify-between items-center">
+      <div class="font-bold text-gray-800">收集进度：3/12</div>
+      <div class="text-primary font-semibold">集齐奖励：1000兔力</div>
+    </div>
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-white rounded-2xl p-3 text-center shadow-card icon-item cursor-pointer">
+        <img src="https://picsum.photos/100/100?1" class="w-full h-24 object-cover rounded-xl mb-2">
+        <div class="text-sm text-gray-700">职场兔兔</div>
+      </div>
+      <div class="bg-white rounded-2xl p-3 text-center shadow-card icon-item cursor-pointer">
+        <img src="https://picsum.photos/100/100?2" class="w-full h-24 object-cover rounded-xl mb-2">
+        <div class="text-sm text-gray-700">奋斗兔兔</div>
+      </div>
+      <div class="bg-white rounded-2xl p-3 text-center shadow-card icon-item cursor-pointer">
+        <img src="https://picsum.photos/100/100?3" class="w-full h-24 object-cover rounded-xl mb-2">
+        <div class="text-sm text-gray-700">快乐兔兔</div>
+      </div>
+      <div class="bg-gray-100 rounded-2xl p-3 text-center relative shadow-card icon-item cursor-pointer">
+        <div class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
+          <i class="fa fa-lock text-white text-2xl"></i>
+        </div>
+        <img src="https://picsum.photos/100/100?4" class="w-full h-24 object-cover rounded-xl mb-2 opacity-30">
+        <div class="text-sm text-gray-500">神秘兔兔</div>
+      </div>
+      <div class="bg-gray-100 rounded-2xl p-3 text-center relative shadow-card icon-item cursor-pointer">
+        <div class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
+          <i class="fa fa-lock text-white text-2xl"></i>
+        </div>
+        <img src="https://picsum.photos/100/100?5" class="w-full h-24 object-cover rounded-xl mb-2 opacity-30">
+        <div class="text-sm text-gray-500">文艺兔兔</div>
+      </div>
+      <div class="bg-gray-100 rounded-2xl p-3 text-center relative shadow-card icon-item cursor-pointer">
+        <div class="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center">
+          <i class="fa fa-lock text-white text-2xl"></i>
+        </div>
+        <img src="https://picsum.photos/100/100?6" class="w-full h-24 object-cover rounded-xl mb-2 opacity-30">
+        <div class="text-sm text-gray-500">活力兔兔</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面5：个人中心 -->
+  <div id="page-user" class="page px-4 pt-5">
+    <div class="bg-gradient-to-r from-primary to-purple rounded-2xl shadow-card p-5 flex items-center mb-6 text-white">
+      <img src="https://picsum.photos/80/80" class="w-16 h-16 rounded-full object-cover border-2 border-white/50">
+      <div class="ml-4">
+        <div class="font-bold text-xl">张三</div>
+        <div class="text-white/90 text-sm mt-1">产品部 | 工号：A00123</div>
+        <div class="mt-2">兔力值：<span class="text-xl font-bold">1280</span></div>
+      </div>
+    </div>
+
+    <div class="space-y-3 mb-5">
+      <div class="bg-white rounded-2xl shadow-card p-4 flex items-center icon-item cursor-pointer">
+        <i class="fa fa-list-alt text-primary text-xl mr-4"></i>
+        <div class="flex-1 text-gray-800">兑换订单</div>
+        <i class="fa fa-angle-right text-gray-400"></i>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 flex items-center icon-item cursor-pointer">
+        <i class="fa fa-history text-primary text-xl mr-4"></i>
+        <div class="flex-1 text-gray-800">积分流水</div>
+        <i class="fa fa-angle-right text-gray-400"></i>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 flex items-center icon-item cursor-pointer" onclick="goPage('rule')">
+        <i class="fa fa-book text-primary text-xl mr-4"></i>
+        <div class="flex-1 text-gray-800">积分规则</div>
+        <i class="fa fa-angle-right text-gray-400"></i>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 flex items-center icon-item cursor-pointer" onclick="goPage('admin')">
+        <i class="fa fa-cog text-primary text-xl mr-4"></i>
+        <div class="flex-1 text-gray-800">管理员后台</div>
+        <i class="fa fa-angle-right text-gray-400"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面6：排行榜 -->
+  <div id="page-rank" class="page px-4 pt-5">
+    <div class="flex gap-3 mb-5">
+      <button class="btn flex-1 bg-primary text-white py-2.5 rounded-xl shadow-btn">月度总榜</button>
+      <button class="btn flex-1 bg-white border border-gray-200 py-2.5 rounded-xl text-gray-700">部门榜</button>
+      <button class="btn flex-1 bg-white border border-gray-200 py-2.5 rounded-xl text-gray-700">晒图榜</button>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4 space-y-4">
+      <div class="flex items-center border-b border-gray-100 pb-4">
+        <div class="w-8 text-secondary font-bold text-lg">1</div>
+        <img src="https://picsum.photos/60/60?10" class="w-11 h-11 rounded-full mx-3">
+        <div class="flex-1">
+          <div class="font-medium text-gray-800">李四</div>
+          <div class="text-xs text-gray-400 mt-1">运营部</div>
+        </div>
+        <div class="text-secondary font-bold text-lg">3680</div>
+      </div>
+      <div class="flex items-center border-b border-gray-100 pb-4">
+        <div class="w-8 text-gray-400 font-bold text-lg">2</div>
+        <img src="https://picsum.photos/60/60?11" class="w-11 h-11 rounded-full mx-3">
+        <div class="flex-1">
+          <div class="font-medium text-gray-800">王五</div>
+          <div class="text-xs text-gray-400 mt-1">技术部</div>
+        </div>
+        <div class="text-secondary font-bold text-lg">3210</div>
+      </div>
+      <div class="flex items-center border-b border-gray-100 pb-4">
+        <div class="w-8 text-gray-400 font-bold text-lg">3</div>
+        <img src="https://picsum.photos/60/60?12" class="w-11 h-11 rounded-full mx-3">
+        <div class="flex-1">
+          <div class="font-medium text-gray-800">赵六</div>
+          <div class="text-xs text-gray-400 mt-1">市场部</div>
+        </div>
+        <div class="text-secondary font-bold text-lg">2950</div>
+      </div>
+      <div class="flex items-center">
+        <div class="w-8 text-primary font-bold text-lg">18</div>
+        <img src="https://picsum.photos/80/80" class="w-11 h-11 rounded-full mx-3 border border-primary">
+        <div class="flex-1">
+          <div class="font-medium text-gray-800">我(张三)</div>
+          <div class="text-xs text-gray-400 mt-1">产品部</div>
+        </div>
+        <div class="text-secondary font-bold text-lg">1280</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面7：晒图动态 -->
+  <div id="page-feed" class="page px-4 pt-5">
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-5 flex justify-between items-center">
+      <span class="font-bold text-lg text-gray-800">同事动态</span>
+      <button class="btn bg-primary text-white px-4 py-2 rounded-xl text-sm shadow-btn">发布动态</button>
+    </div>
+    <div class="space-y-5">
+      <div class="bg-white rounded-2xl shadow-card p-4 icon-item cursor-pointer">
+        <div class="flex items-center mb-3">
+          <img src="https://picsum.photos/60/60?20" class="w-9 h-9 rounded-full mr-3">
+          <div>
+            <div class="font-medium text-gray-800">小美 | 行政部</div>
+            <div class="text-xs text-gray-400 mt-0.5">1小时前</div>
+          </div>
+        </div>
+        <p class="text-gray-700 text-sm mb-3">今日参与团队活动，氛围超棒~</p>
+        <img src="https://picsum.photos/300/180?21" class="w-full rounded-xl mb-3">
+        <div class="flex text-sm text-gray-500">
+          <span class="flex items-center mr-6"><i class="fa fa-heart-o mr-1"></i> 26</span>
+          <span class="flex items-center"><i class="fa fa-comment-o mr-1"></i> 8</span>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 icon-item cursor-pointer">
+        <div class="flex items-center mb-3">
+          <img src="https://picsum.photos/60/60?22" class="w-9 h-9 rounded-full mr-3">
+          <div>
+            <div class="font-medium text-gray-800">阿凯 | 技术部</div>
+            <div class="text-xs text-gray-400 mt-0.5">3小时前</div>
+          </div>
+        </div>
+        <p class="text-gray-700 text-sm mb-3">打卡日常，继续加油！</p>
+        <img src="https://picsum.photos/300/180?23" class="w-full rounded-xl mb-3">
+        <div class="flex text-sm text-gray-500">
+          <span class="flex items-center mr-6"><i class="fa fa-heart-o mr-1"></i> 42</span>
+          <span class="flex items-center"><i class="fa fa-comment-o mr-1"></i> 12</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面8：交换广场 -->
+  <div id="page-exchange" class="page px-4 pt-5">
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-5 flex justify-between items-center">
+      <span class="font-bold text-lg text-gray-800">物品交换广场</span>
+      <button class="btn bg-secondary text-white px-4 py-2 rounded-xl text-sm shadow-btn">发布交换</button>
+    </div>
+    <div class="space-y-4">
+      <div class="bg-white rounded-2xl shadow-card p-4 flex icon-item cursor-pointer">
+        <img src="https://picsum.photos/100/100?30" class="w-24 h-24 rounded-xl mr-4">
+        <div class="flex-1">
+          <div class="font-medium text-gray-800">闲置经典兔兔摆件</div>
+          <div class="text-sm text-gray-500 my-2">想换：限定徽章 / 补差积分均可</div>
+          <div class="text-xs text-gray-400">发布人：小李 · 市场部</div>
+        </div>
+        <button class="btn self-center bg-primary text-white px-3 py-1.5 rounded-lg text-sm shadow-btn">私聊</button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-card p-4 flex icon-item cursor-pointer">
+        <img src="https://picsum.photos/100/100?31" class="w-24 h-24 rounded-xl mr-4">
+        <div class="flex-1">
+          <div class="font-medium text-gray-800">多余抽奖券求换头像框</div>
+          <div class="text-sm text-gray-500 my-2">可补积分，诚信交换</div>
+          <div class="text-xs text-gray-400">发布人：小周 · 人事部</div>
+        </div>
+        <button class="btn self-center bg-primary text-white px-3 py-1.5 rounded-lg text-sm shadow-btn">私聊</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面9：消息通知 -->
+  <div id="page-notice" class="page px-4 pt-5">
+    <div class="font-bold text-lg text-gray-800 mb-4">消息通知</div>
+    <div class="bg-white rounded-2xl shadow-card p-4 space-y-4">
+      <div class="border-b border-gray-100 pb-3">
+        <div class="font-medium text-gray-800">系统通知</div>
+        <p class="text-sm text-gray-600 mt-1">每日签到活动已开启，快来领取兔力值吧！</p>
+        <div class="text-xs text-gray-400 mt-1">今天 08:00</div>
+      </div>
+      <div class="border-b border-gray-100 pb-3">
+        <div class="font-medium text-gray-800">积分到账</div>
+        <p class="text-sm text-gray-600 mt-1">你完成了每日签到，获得20兔力！</p>
+        <div class="text-xs text-gray-400 mt-1">今天 09:15</div>
+      </div>
+      <div>
+        <div class="font-medium text-gray-800">活动提醒</div>
+        <p class="text-sm text-gray-600 mt-1">部门集体活动即将开始，参与可额外获得积分~</p>
+        <div class="text-xs text-gray-400 mt-1">昨天 14:30</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面10：积分规则 -->
+  <div id="page-rule" class="page px-4 pt-5 pb-10">
+    <div class="font-bold text-lg text-gray-800 mb-4">积分规则说明</div>
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-4">
+      <div class="font-bold text-primary mb-2">每日基础任务</div>
+      <div class="text-sm text-gray-700 space-y-2">
+        <div>✅ 每日签到：+20 兔力</div>
+        <div>✅ 发布1条晒图动态：+50 兔力</div>
+        <div>✅ 点赞3条同事动态：+10 兔力</div>
+        <div>✅ 评论1条动态：+10 兔力</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-4">
+      <div class="font-bold text-primary mb-2">每周/月度任务</div>
+      <div class="text-sm text-gray-700 space-y-2">
+        <div>✅ 参与部门活动：+30 兔力</div>
+        <div>✅ 提交合理化建议：+50 兔力</div>
+        <div>✅ 跨部门协作1次：+40 兔力</div>
+        <div>✅ 月度全勤：+100 兔力</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-4">
+      <div class="font-bold text-red-500 mb-2">扣分项（慎用）</div>
+      <div class="text-sm text-gray-700 space-y-2">
+        <div>❌ 当月迟到≥3次：-30 兔力</div>
+        <div>❌ 恶意刷屏/灌水：-50 兔力</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-4">
+      <div class="font-bold text-purple-600 mb-2">每日上限</div>
+      <div class="text-sm text-gray-700">每日最多获得 100 兔力，防止刷分</div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4 mb-4">
+      <div class="font-bold text-secondary mb-2">防作弊机制</div>
+      <div class="text-sm text-gray-700 space-y-2">
+        <div>✅ 每日最多发布1条动态</div>
+        <div>✅ 每人每天最多给5人点赞</div>
+        <div>✅ 晒图必须带公司/工位场景</div>
+        <div>✅ 管理员可审核异常积分</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4">
+      <div class="font-bold text-success mb-2">30天运营节奏</div>
+      <div class="text-sm text-gray-700 space-y-1">
+        <div>🔹 第1周：启动官宣+双倍签到</div>
+        <div>🔹 第2-3周：主题活动+每周榜单</div>
+        <div>🔹 第4周：数据复盘+奖品迭代</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页面11：管理员后台 -->
+  <div id="page-admin" class="page px-4 pt-5 pb-10">
+    <div class="font-bold text-lg text-gray-800 mb-4">管理员后台</div>
+    <div class="grid grid-cols-2 gap-3 mb-5">
+      <div class="bg-white rounded-xl shadow-card p-4 cursor-pointer icon-item">
+        <i class="fa fa-users text-primary text-2xl mb-2"></i>
+        <div class="font-medium text-gray-800">用户管理</div>
+        <div class="text-xs text-gray-500 mt-1">查看积分/部门/等级</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-card p-4 cursor-pointer icon-item">
+        <i class="fa fa-history text-primary text-2xl mb-2"></i>
+        <div class="font-medium text-gray-800">积分流水</div>
+        <div class="text-xs text-gray-500 mt-1">加分/扣分/记录</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-card p-4 cursor-pointer icon-item">
+        <i class="fa fa-tasks text-primary text-2xl mb-2"></i>
+        <div class="font-medium text-gray-800">任务配置</div>
+        <div class="text-xs text-gray-500 mt-1">开关/修改积分</div>
+      </div>
+      <div class="bg-white rounded-xl shadow-card p-4 cursor-pointer icon-item">
+        <i class="fa fa-gift text-primary text-2xl mb-2"></i>
+        <div class="font-medium text-gray-800">兑换管理</div>
+        <div class="text-xs text-gray-500 mt-1">上架/核销/订单</div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-card p-4">
+      <div class="font-bold text-gray-800 mb-2">后台管理说明</div>
+      <div class="text-sm text-gray-700 space-y-2">
+        <div>1. 员工提交任务 → 管理员审核</div>
+        <div>2. 积分自动/手动发放</div>
+        <div>3. 兑换申请 → 核销发放奖品</div>
+        <div>4. 支持Excel导出+数据统计</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 抽奖弹窗 -->
+  <div class="modal" id="lotteryModal">
+    <div class="bg-white w-4/5 rounded-2xl p-6 text-center shadow-lg">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">幸运抽奖</h3>
+      <img src="https://picsum.photos/150/150?40" class="w-36 h-36 mx-auto rounded-xl mb-4">
+      <p class="text-gray-600 mb-5">消耗 200 兔力，抽取随机IP周边好物</p>
+      <div class="flex gap-4">
+        <button class="btn flex-1 border border-gray-200 py-2.5 rounded-xl text-gray-700" onclick="closeLottery()">取消</button>
+        <button class="btn flex-1 bg-secondary text-white py-2.5 rounded-xl shadow-btn">立即抽奖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部导航栏 -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white shadow-card border-t border-gray-100 flex justify-around py-3 max-w-md mx-auto z-20">
+    <div class="nav-btn text-center cursor-pointer" data-page="home">
+      <i class="fa fa-home text-lg"></i>
+      <div class="text-xs mt-1">首页</div>
+    </div>
+    <div class="nav-btn text-center cursor-pointer" data-page="task">
+      <i class="fa fa-tasks text-lg"></i>
+      <div class="text-xs mt-1">任务</div>
+    </div>
+    <div class="nav-btn text-center cursor-pointer" data-page="feed">
+      <i class="fa fa-picture-o text-lg"></i>
+      <div class="text-xs mt-1">动态</div>
+    </div>
+    <div class="nav-btn text-center cursor-pointer" data-page="exchange">
+      <i class="fa fa-exchange text-lg"></i>
+      <div class="text-xs mt-1">广场</div>
+    </div>
+    <div class="nav-btn text-center cursor-pointer" data-page="user">
+      <i class="fa fa-user text-lg"></i>
+      <div class="text-xs mt-1">我的</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const pages = ['home','task','shop','collect','user','rank','feed','exchange','notice','rule','admin'];
+  const titleMap = {
+    home:'兔力计划',
+    task:'任务中心',
+    shop:'积分商城',
+    collect:'兔兔图鉴',
+    user:'个人中心',
+    rank:'积分排行榜',
+    feed:'晒图动态',
+    exchange:'交换广场',
+    notice:'消息通知',
+    rule:'积分规则',
+    admin:'管理员后台'
+  };
+
+  // 页面切换逻辑
+  function goPage(page) {
+    pages.forEach(p => {
+      document.getElementById('page-'+p).classList.remove('active');
+    });
+    document.getElementById('page-'+page).classList.add('active');
+    document.getElementById('page-title').innerText = titleMap[page];
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.classList.remove('text-primary');
+      btn.classList.add('text-gray-500');
+      if(btn.dataset.page === page){
+        btn.classList.remove('text-gray-500');
+        btn.classList.add('text-primary');
+      }
+    });
+  }
+
+  // 抽奖弹窗
+  function openLottery(){
+    document.getElementById('lotteryModal').classList.add('show');
+  }
+  function closeLottery(){
+    document.getElementById('lotteryModal').classList.remove('show');
+  }
+
+  // 绑定底部导航
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => goPage(btn.dataset.page));
+  });
+</script>
+</body>
+</html>
