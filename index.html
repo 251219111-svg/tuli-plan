@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>云水同栖测试版 - 企业文化互动积分体系</title>
-  <!-- 这是新手测试代码 -->
 
-  <!-- 钉钉官方JSAPI -->
-  <script src="https://g.alicdn.com/dingding/open-develop/dingtalk-jssdk-1.9.0.js"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -661,21 +658,12 @@ createApp({
       this.userInfo.points += total;
       alert("一键完成所有任务！积分 +"+total);
     },
-    // 钉钉真实单聊API
     openDingTalkChat(userId){
       if (!userId || userId === "0000") {
         alert("匿名用户无法发起私聊");
         return;
       }
-      try {
-        dd.biz.chat.openSingleChat({
-          users: [userId],
-          success: () => {},
-          fail: (err) => { alert("打开钉钉聊天失败：" + JSON.stringify(err)); }
-        });
-      } catch (e) {
-        alert("预览模式：正在联系用户ID " + userId);
-      }
+      alert("已模拟联系用户：" + userId);
     },
     contactExchange(item){
       this.openDingTalkChat(item.userId);
