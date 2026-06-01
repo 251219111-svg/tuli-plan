@@ -40,21 +40,19 @@
             min-height: 100vh;
         }
 
-        /* 钉钉电脑端强制适配 */
+        /* 钉钉内嵌窗口强制撑满 */
         .app {
             width: 100%;
-            max-width: 720px;
             height: 100vh;
             background: var(--bg-white);
             overflow: hidden;
             position: relative;
         }
 
-        /* 手机端自动降级 */
-        @media (max-width: 767px) {
-            .app {
-                max-width: 375px;
-                border-radius: 0;
+        /* 只在浏览器中限制最大宽度，钉钉中自动撑满 */
+        @media (min-width: 768px) {
+            body:not(.in-dingtalk) .app {
+                max-width: 720px;
             }
         }
 
@@ -232,8 +230,7 @@
         <div class="header">
             <div style="display:flex; align-items:center; gap:16px;">
                 <div class="avatar">
-                    <!-- 你的 avatar.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
                 </div>
                 <div>
                     <div style="font-size:18px; font-weight:600; color:var(--text-main);">张明</div>
@@ -276,24 +273,21 @@
         <div style="display:flex; gap:16px; padding:0 24px;">
             <div class="card" style="flex:1; text-align:center;">
                 <div style="width:80px; height:80px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 12px; overflow:hidden;">
-                    <!-- 你的 cup.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div style="font-size:14px; color:var(--text-main);">品牌定制随行杯</div>
                 <div style="font-size:14px; color:var(--primary); margin-top:8px;">ⓢ 500</div>
             </div>
             <div class="card" style="flex:1; text-align:center;">
                 <div style="width:80px; height:80px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 12px; overflow:hidden;">
-                    <!-- 你的 Keychain.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div style="font-size:14px; color:var(--text-main);">IP钥匙链</div>
                 <div style="font-size:14px; color:var(--primary); margin-top:8px;">ⓢ 300</div>
             </div>
             <div class="card" style="flex:1; text-align:center;">
                 <div style="width:80px; height:80px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 12px; overflow:hidden;">
-                    <!-- 你的 cup2.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div style="font-size:14px; color:var(--text-main);">限定款随行杯</div>
                 <div style="font-size:14px; color:var(--primary); margin-top:8px;">ⓢ 800</div>
@@ -380,8 +374,7 @@
             <div style="display:flex; align-items:center; justify-content:space-between; background:var(--primary-light); border-radius:var(--radius-md); padding:16px;">
                 <div style="display:flex; align-items:center; gap:16px;">
                     <div class="avatar">
-                        <!-- 你的 avatar.jpg -->
-                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
                     </div>
                     <div>
                         <div style="font-size:16px; font-weight:600; color:var(--text-main);">兔力员工</div>
@@ -406,8 +399,7 @@
         <div class="grid-2">
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 cup.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="经典白兔摆件">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="经典白兔摆件">
                 </div>
                 <div class="product-info">
                     <div class="product-name">品牌定制随行杯</div>
@@ -416,8 +408,7 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 Keychain.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="星空夜光兔">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="星空夜光兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">IP钥匙链</div>
@@ -426,8 +417,7 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 cup2.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="每日幸运抽奖">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="每日幸运抽奖">
                 </div>
                 <div class="product-info">
                     <div class="product-name">限定款随行杯</div>
@@ -436,8 +426,7 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 shouban.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="迎新大礼包">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="迎新大礼包">
                 </div>
                 <div class="product-info">
                     <div class="product-name">限定款手办</div>
@@ -468,8 +457,7 @@
         <div class="grid-2">
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 baozhen.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="晨曦白兔">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="晨曦白兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">晨曦白兔</div>
@@ -478,8 +466,7 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 Keychain.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="静夜蓝兔">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="静夜蓝兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">静夜蓝兔</div>
@@ -488,8 +475,7 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 shouban.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="暖阳黄兔">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="暖阳黄兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">暖阳黄兔</div>
@@ -498,8 +484,7 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 baozhen.jpg -->
-                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="浅草青兔">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="浅草青兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">浅草青兔</div>
@@ -551,8 +536,7 @@
             <div class="card">
                 <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
                     <div class="avatar" style="width:40px; height:40px;">
-                        <!-- 你的 avatar.jpg -->
-                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
                     </div>
                     <div>
                         <div style="font-size:14px; font-weight:600; color:var(--text-main);">张明 技术部</div>
@@ -561,8 +545,7 @@
                 <div style="font-size:14px; color:var(--text-main); margin-bottom:16px;">我有极客兔，想换一个职场兔，有人愿意换吗？</div>
                 <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
                     <div style="width:40px; height:40px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
-                        <!-- 你的 baozhen.jpg -->
-                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                     </div>
                     <span style="font-size:20px;">→</span>
                     <div style="width:40px; height:40px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
@@ -589,7 +572,6 @@
         <div class="grid-2">
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 cup.jpg -->
                     <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="工位晒图">
                 </div>
                 <div class="product-info">
@@ -602,7 +584,6 @@
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <!-- 你的 shouban.jpg -->
                     <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="开箱晒图">
                 </div>
                 <div class="product-info">
@@ -620,7 +601,6 @@
     <div class="page" id="page7">
         <div style="background:var(--primary); color:white; padding:24px; text-align:center;">
             <div class="avatar" style="width:72px; height:72px; margin:0 auto 16px; border:2px solid white;">
-                <!-- 你的 avatar.jpg -->
                 <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
             </div>
             <div style="font-size:18px; font-weight:600; margin-bottom:6px;">兔力员工</div>
@@ -700,6 +680,11 @@
 </div>
 
 <script>
+    // 钉钉环境检测，给 body 加标记
+    if (window.navigator.userAgent.indexOf('DingTalk') !== -1 || window.__dingtalk__) {
+        document.body.classList.add('in-dingtalk');
+    }
+
     function go(num) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
         document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'))
