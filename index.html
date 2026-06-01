@@ -1,751 +1,697 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>云水同栖测试版 - 企业文化互动积分体系</title>
+    <meta charset="UTF-8">
+    <!-- 适配手机 viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兔力计划 - 钉钉内部积分应用</title>
+    <style>
+        :root {
+            --primary: #2A57D9;
+            --primary-light: #E8EEFB;
+            --primary-aux: #C5D3F2;
+            --primary-hover: #7A9BE8;
+            --bg-white: #FFFFFF;
+            --bg-gray: #F5F7FA;
+            --border: #E5E6EB;
+            --text-main: #333F51;
+            --text-secondary: #86909C;
+            --success: #36B37E;
+            --warning: #FFAB00;
+            --error: #F53F3F;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --shadow-light: 0 2px 8px rgba(0,0,0,0.05);
+        }
 
-  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background-color: #f7f8fa;
-      min-height: 100vh;
-      font-family: "Microsoft Yahei", sans-serif;
-    }
-    #app {
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      background: #ffffff;
-      min-height: 100vh;
-      box-shadow: 0 0 20px rgba(0,0,0,0.05);
-    }
-    @media (min-width: 768px) {
-      #app {
-        max-width: 720px;
-        padding-bottom: 80px;
-      }
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
 
-    :root {
-      --brand: #2E4FD9;
-      --brand-light: #e8eeff;
-      --brand-deep: #203fb8;
-    }
+        body {
+            background: var(--bg-gray);
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
 
-    .gradient-text {
-      background: linear-gradient(90deg, #2E4FD9, #5474ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-    .gradient-bg {
-      background: linear-gradient(135deg, #2E4FD9, #5474ff);
-    }
-    .nav-active {
-      color: #2E4FD9;
-      transform: scale(1.1);
-    }
-    .card-hover {
-      transition: all 0.3s ease;
-    }
-    .card-hover:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 20px rgba(46, 79, 217, 0.15);
-    }
-    .task-done {
-      opacity: 0.6;
-    }
-    .collection-owned {
-      border-color: #2E4FD9;
-      background-color: #e8eeff;
-    }
-    .collection-locked {
-      opacity: 0.4;
-      filter: grayscale(1);
-    }
+        /* 默认：手机端 */
+        .app {
+            width: 100%;
+            max-width: 375px;
+            height: 100vh;
+            max-height: 750px;
+            background: var(--bg-white);
+            border-radius: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+            position: relative;
+        }
 
-    @keyframes taskBounce {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    .task-success {
-      animation: taskBounce 0.4s ease;
-    }
+        /* 电脑钉钉：固定大屏 */
+        @media (min-width: 1024px) {
+            .app {
+                max-width: 720px;
+                max-height: 85vh;
+                border-radius: 16px;
+            }
+        }
 
-    @keyframes floatScore {
-      0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(-40px); }
-    }
-    .score-float {
-      position: absolute;
-      font-weight: bold;
-      font-size: 16px;
-      animation: floatScore 1s ease forwards;
-      pointer-events: none;
-      z-index: 100;
-    }
-    .score-double {
-      color: #ff4757 !important;
-      font-size: 18px !important;
-    }
+        .page {
+            display: none;
+            height: 100%;
+            padding-bottom: 70px;
+            overflow-y: auto;
+        }
 
-    .modal-mask {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    .modal-box {
-      width: 85%;
-      max-width: 360px;
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-    }
+        .page.active {
+            display: block;
+        }
 
-    .like-active {
-      color: #ff4757 !important;
-      font-weight: bold;
-    }
-    .input-focus {
-      outline: none;
-      border-color: #2E4FD9;
-    }
-    .level-tag {
-      background: linear-gradient(90deg, #2E4FD9, #5474ff);
-      color: #fff;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-size: 12px;
-    }
-    .hot-label {
-      background: #ff4757;
-      color: #fff;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-size: 10px;
-    }
-    .new-tag {
-      background: #10b981;
-      color: #fff;
-      padding: 2px 6px;
-      border-radius: 10px;
-      font-size: 10px;
-    }
-    .signed {
-      background: var(--brand-light) !important;
-      color: var(--brand) !important;
-      font-weight: bold;
-    }
-    .today {
-      border: 2px solid var(--brand) !important;
-    }
-  </style>
+        /* 底部导航（新图标：SVG 线性） */
+        .nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background: var(--bg-white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav button {
+            background: none;
+            border: none;
+            font-size: 10px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .nav button.active {
+            color: var(--primary);
+        }
+
+        .nav svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        /* 公共组件 */
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .tag-group {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 16px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: var(--bg-gray);
+            color: var(--text-secondary);
+            border: none;
+            cursor: pointer;
+        }
+
+        .tag.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 20px 20px;
+        }
+
+        .product-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 140px;
+            background: var(--bg-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 10px;
+        }
+
+        .product-name {
+            font-size: 12px;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .product-points {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* 电脑端微调字体和间距 */
+        @media (min-width: 1024px) {
+            .section-title {
+                font-size: 16px;
+            }
+            .product-name {
+                font-size: 14px;
+            }
+            .btn-primary {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="app">
-  <div class="min-h-screen pb-20 relative">
-    <div ref="floatBox"></div>
+<div class="app">
 
-    <!-- 首页 -->
-    <div v-if="nav === 'home'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">🐰 云水同栖测试版</h1>
-        <p class="text-gray-500 mt-1">企业文化互动积分系统</p>
-      </div>
-
-      <div class="gradient-bg rounded-3xl p-5 text-white mb-6 shadow-lg">
-        <div class="flex justify-between items-center">
-          <div>
-            <p class="opacity-80">当前积分</p>
-            <h2 class="text-3xl font-bold mt-1">{{ userInfo.points }}</h2>
-          </div>
-          <div class="text-right">
-            <div class="level-tag mb-1">{{ levelTitle }} Lv{{ userInfo.level }}</div>
-            <p>进度 {{ userInfo.progress }}%</p>
-            <p class="text-xs mt-1" v-if="isDoubleDay">🔥 今日积分翻倍日</p>
-            <p class="text-xs mt-1" v-if="isNewUser">✅ 新人双倍积分</p>
-          </div>
-        </div>
-        <div class="w-full bg-white/30 rounded-full h-2 mt-3">
-          <div class="h-full bg-white rounded-full" :style="{'width': userInfo.progress + '%'}"></div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <button @click="openSignCalendar" class="bg-orange-50 text-orange-600 py-2.5 rounded-xl text-sm font-medium">📅 每日签到</button>
-        <button @click="finishAllTasks" class="bg-green-50 text-green-600 py-2.5 rounded-xl text-sm font-medium">⚡ 一键完成任务</button>
-      </div>
-
-      <div class="mb-3" v-if="showReturnGift">
-        <button @click="getReturnGift" class="w-full bg-orange-100 text-orange-600 py-2 rounded-xl text-sm font-medium">🎁 领取回归礼包</button>
-      </div>
-
-      <div class="mb-6">
-        <h3 class="font-bold text-lg mb-3">🔥 每日互动任务</h3>
-        <div class="space-y-3">
-          <div v-for="task in todayTasks" :key="task.id"
-               class="bg-gray-50 rounded-2xl p-4 flex justify-between items-center card-hover relative"
-               :class="[task.completed ? 'task-done' : '', task.animClass]"
-               @click="doTask(task, $event)">
-            <div>
-              <p class="font-medium">{{ task.title }}</p>
-              <p class="text-xs text-gray-500 mt-1">{{ task.desc }}</p>
+    <!-- 1. 首页 -->
+    <div class="page active" id="page1">
+        <div class="header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="avatar">
+                    <img src="https://via.placeholder.com/100" alt="用户头像">
+                </div>
+                <div>
+                    <div style="font-size:16px; font-weight:600; color:var(--text-main);">张明</div>
+                    <div style="font-size:12px; color:var(--text-secondary);">研发部·高级工程师</div>
+                </div>
             </div>
-            <div class="text-right">
-              <span class="font-bold text-[#2E4FD9]">+{{ finalPoints(task.points) }}</span>
-              <span v-if="isDoubleDay || isNewUser" class="hot-label ml-1">X2</span>
-              <div v-if="task.completed" class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full mt-1">已完成</div>
-              <div v-else class="text-xs bg-[#e8eeff] text-[#2E4FD9] px-2 py-0.5 rounded-full mt-1">去完成</div>
+            <div style="font-size:20px;">🔔</div>
+        </div>
+
+        <div style="padding:0 20px; margin-bottom:20px;">
+            <div style="background: var(--primary-light); border-radius:var(--radius-md); padding:20px; text-align:center;">
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">当前兔力值</div>
+                <div style="font-size:24px; font-weight:700; color:var(--primary); margin-bottom:12px;">1,250</div>
+                <button class="btn-primary">今日签到</button>
             </div>
-          </div>
         </div>
-      </div>
 
-      <div class="mb-6">
-        <h3 class="font-bold text-lg mb-3">
-          📢 今日互动话题
-          <span class="hot-label ml-2">自动随机</span>
-        </h3>
-        <div class="bg-[#e8eeff] rounded-2xl p-4">
-          <p class="text-[#2E4FD9] font-medium">#{{ dailyTopic }}</p>
-          <button class="mt-2 text-sm gradient-bg text-white px-3 py-1 rounded-xl" @click="nav='community'">去发帖参与</button>
-        </div>
-      </div>
-
-      <div class="mb-6">
-        <h3 class="font-bold text-lg mb-3">🎰 积分抽奖</h3>
-        <div class="bg-gray-50 rounded-2xl p-4 text-center">
-          <p class="text-sm mb-2">消耗 50 积分 / 次</p>
-          <button @click="doLottery" class="gradient-bg text-white py-2 px-6 rounded-xl">开始抽奖</button>
-        </div>
-      </div>
-
-      <div>
-        <h3 class="font-bold text-lg mb-3">热门兑换</h3>
-        <div class="grid grid-cols-3 gap-3">
-          <div v-for="good in hotGoods" :key="good.id" class="bg-gray-50 rounded-2xl p-3 text-center card-hover relative">
-            <div v-if="good.limited" class="absolute -top-2 -right-2 gradient-bg text-white text-xs px-2 py-1 rounded-full">限定</div>
-            <div v-if="good.newItem" class="absolute -top-2 -left-2 new-tag text-xs">新品</div>
-            <div class="text-3xl mb-2">{{ good.cover }}</div>
-            <p class="text-sm font-medium truncate">{{ good.name }}</p>
-            <p class="text-xs text-[#2E4FD9] mt-1">{{ good.points }}积分</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 任务中心 -->
-    <div v-if="nav === 'task'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">📋 任务中心</h1>
-        <p class="text-gray-500 mt-1">互动越多，积分越多</p>
-      </div>
-      <div class="flex gap-2 mb-5 bg-gray-100 p-1 rounded-xl">
-        <button @click="activeTaskTab = 'daily'"
-                :class="activeTaskTab === 'daily' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg font-medium text-sm">每日互动</button>
-        <button @click="activeTaskTab = 'weekly'"
-                :class="activeTaskTab === 'weekly' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg font-medium text-sm">每周主题</button>
-        <button @click="activeTaskTab = 'activity'"
-                :class="activeTaskTab === 'activity' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg font-medium text-sm">话题打卡</button>
-        <button @click="activeTaskTab = 'team'"
-                :class="activeTaskTab === 'team' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg font-medium text-sm">组队任务</button>
-      </div>
-      <div class="space-y-3">
-        <div v-for="task in taskCategories[activeTaskTab]" :key="task.id"
-             class="bg-gray-50 rounded-2xl p-4 flex justify-between items-center card-hover relative"
-             :class="[task.completed ? 'task-done' : '', task.animClass]"
-             @click="doTask(task, $event)">
-            <div><p class="font-medium">{{ task.title }}</p></div>
-            <div class="text-right">
-              <span class="font-bold text-[#2E4FD9]">+{{ finalPoints(task.points) }}积分</span>
-              <span v-if="isDoubleDay || isNewUser" class="hot-label ml-1">X2</span>
-              <div v-if="task.completed" class="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full mt-1">已完成</div>
-              <div v-else class="text-xs bg-[#e8eeff] text-[#2E4FD9] px-2 py-0.5 rounded-full mt-1">去完成</div>
+        <div class="section-title">今日任务</div>
+        <div style="display:flex; gap:12px; padding:0 20px 16px;">
+            <div class="card" style="flex:1;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <input type="checkbox" id="task1">
+                    <label for="task1" style="font-size:12px; color:var(--text-main);">完成代码审查 #421</label>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="task2">
+                    <label for="task2" style="font-size:12px; color:var(--text-main);">提交周报总结</label>
+                </div>
             </div>
-          </div>
-      </div>
-    </div>
-
-    <!-- 收藏图鉴 -->
-    <div v-if="nav === 'collection'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">🐰 收藏图鉴</h1>
-        <p class="text-gray-500 mt-1">已收集 {{ userInfo.collectionCount }} / {{ userInfo.totalCollection }}</p>
-        <p class="text-xs text-[#2E4FD9] mt-1">集齐套装可解锁额外奖励</p>
-      </div>
-      <div class="w-full bg-gray-100 rounded-full h-3 mb-6">
-        <div class="gradient-bg h-full rounded-full" :style="{'width': (userInfo.collectionCount / userInfo.totalCollection * 100) + '%'}"></div>
-      </div>
-      <div class="grid grid-cols-4 gap-3">
-        <div v-for="item in collections" :key="item.id"
-             class="rounded-2xl p-3 text-center card-hover border-2"
-             :class="item.owned ? 'collection-owned' : 'collection-locked'">
-          <div class="text-2xl mb-1">{{ item.icon }}</div>
-          <p class="text-xs font-medium">{{ item.name }}</p>
-          <span class="text-[10px] px-1 py-0.5 rounded bg-[#e8eeff] text-[#2E4FD9] mt-1 inline-block">{{ item.rarity }}</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 兑换商城 -->
-    <div v-if="nav === 'mall'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">🎁 兑换商城</h1>
-        <p class="text-gray-500 mt-1">当前积分：{{ userInfo.points }}</p>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div v-for="good in mallGoods" :key="good.id" class="bg-gray-50 rounded-2xl p-4 card-hover relative">
-          <div v-if="good.limited" class="absolute -top-2 -right-2 gradient-bg text-white text-xs px-2 py-1 rounded-full">限定</div>
-          <div v-if="good.newItem" class="absolute -top-2 -left-2 new-tag text-xs">新品</div>
-          <div class="h-20 flex items-center justify-center text-4xl mb-3">{{ good.cover }}</div>
-          <p class="font-medium text-sm">{{ good.name }}</p>
-          <p class="font-bold text-[#2E4FD9] mt-1">{{ good.points }}积分</p>
-          <button class="w-full mt-2 gradient-bg text-white text-sm py-1.5 rounded-xl" @click="openExchangeModal(good)">立即兑换</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 排行榜 -->
-    <div v-if="nav === 'ranking'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">🏆 排行榜</h1>
-        <p class="text-gray-500 mt-1">看看谁是兔力大神</p>
-      </div>
-      <div class="flex gap-2 mb-5 bg-gray-100 p-1 rounded-xl">
-        <button @click="activeRankTab = 'month'"
-                :class="activeRankTab === 'month' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg text-sm">月积分榜</button>
-        <button @click="activeRankTab = 'dept'"
-                :class="activeRankTab === 'dept' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg text-sm">部门榜</button>
-        <button @click="activeRankTab = 'fun'"
-                :class="activeRankTab === 'fun' ? 'bg-white shadow-sm text-[#2E4FD9]' : 'text-gray-500'"
-                class="flex-1 py-2 rounded-lg text-sm">趣味榜</button>
-      </div>
-      <div class="space-y-3">
-        <div v-for="(item,i) in rankings[activeRankTab]" :key="item.rank" class="bg-gray-50 rounded-2xl p-4 flex items-center card-hover">
-          <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3"
-               :class="i==0?'bg-yellow-100 text-yellow-600':i==1?'bg-gray-100 text-gray-600':i==2?'bg-orange-100 text-orange-600':'bg-[#e8eeff] text-[#2E4FD9]'">
-            {{ item.rank }}
-          </div>
-          <div class="flex-1">
-            <p class="font-medium cursor-pointer" @click="openDingTalkChat(item.userId)">{{ item.name }}</p>
-            <p v-if="item.dept" class="text-xs text-gray-500">{{ item.dept }}</p>
-            <p v-if="item.tag" class="text-xs bg-purple-100 text-purple-600 inline-block px-2 rounded mt-1">{{ item.tag }}</p>
-          </div>
-          <div class="font-bold text-[#2E4FD9]">{{ item.points || item.score || item.likes }}</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 晒图社区 -->
-    <div v-if="nav === 'community'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">🌟 晒图社区</h1>
-        <p class="text-gray-500 mt-1">今日话题：#{{ dailyTopic }}</p>
-      </div>
-
-      <div class="bg-gray-50 rounded-2xl p-4 mb-5">
-        <textarea v-model="newPostContent" rows="2" placeholder="分享你的日常、工位、感悟，带话题互动赚积分～" class="w-full p-2 border rounded-lg text-sm input-focus"></textarea>
-        <div class="flex gap-2 mt-2">
-          <button @click="publishPost" class="gradient-bg text-white text-sm py-1.5 px-4 rounded-xl">发布动态</button>
-          <button @click="publishAnonymous" class="bg-gray-200 text-gray-700 text-sm py-1.5 px-4 rounded-xl">匿名发布</button>
-        </div>
-      </div>
-
-      <div class="space-y-4">
-        <div v-for="(post, idx) in communityPosts" :key="post.id" class="bg-gray-50 rounded-2xl p-4 card-hover">
-          <div class="flex items-center mb-3">
-            <div class="w-8 h-8 rounded-full bg-[#e8eeff] flex items-center justify-center mr-2">{{ post.avatar }}</div>
-            <div class="flex-1">
-              <p class="font-medium text-sm cursor-pointer" @click="openDingTalkChat(post.userId)">
-                {{ post.user }}
-                <span v-if="post.anonymous" class="bg-gray-100 text-xs px-2 py-0.5 rounded">匿名</span>
-              </p>
-              <p class="text-xs text-gray-500">{{ post.time }}</p>
+            <div class="card" style="flex:1; text-align:center;">
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">图鉴收集</div>
+                <div style="width:80px; height:80px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                    <div style="font-size:16px; font-weight:600; color:var(--primary);">65%</div>
+                </div>
+                <div style="font-size:10px; color:var(--text-secondary); margin-top:4px;">已收集 13/20</div>
             </div>
-          </div>
-          <p class="text-sm mb-3">{{ post.content }}</p>
-          <div class="h-40 bg-white rounded-xl flex items-center justify-center text-6xl mb-3">{{ post.image }}</div>
-          <div class="flex gap-4 text-xs text-gray-500">
-            <div @click="likePost(idx)" :class="post.isLiked ? 'like-active' : ''" class="cursor-pointer">❤️ {{ post.likes }} 点赞</div>
-            <div>💬 {{ post.comments }} 评论</div>
-          </div>
         </div>
-      </div>
+
+        <div class="section-title">热门兑换 <span style="float:right; color:var(--primary); font-size:12px;">查看全部</span></div>
+        <div style="display:flex; gap:12px; padding:0 20px;">
+            <div class="card" style="flex:1; text-align:center;">
+                <div style="width:60px; height:60px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 8px; overflow:hidden;">
+                    <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div style="font-size:10px; color:var(--text-main);">品牌定制随行杯</div>
+                <div style="font-size:10px; color:var(--primary); margin-top:4px;">ⓢ 500</div>
+            </div>
+            <div class="card" style="flex:1; text-align:center;">
+                <div style="width:60px; height:60px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 8px; overflow:hidden;">
+                    <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div style="font-size:10px; color:var(--text-main);">降噪蓝牙耳机</div>
+                <div style="font-size:10px; color:var(--primary); margin-top:4px;">ⓢ 3000</div>
+            </div>
+            <div class="card" style="flex:1; text-align:center;">
+                <div style="width:60px; height:60px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 8px; overflow:hidden;">
+                    <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div style="font-size:10px; color:var(--text-main);">午餐补贴券</div>
+                <div style="font-size:10px; color:var(--primary); margin-top:4px;">ⓢ 100</div>
+            </div>
+        </div>
     </div>
 
-    <!-- 交换广场 -->
-    <div v-if="nav === 'exchange'" class="p-5">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold gradient-text">🤝 交换广场</h1>
-        <p class="text-gray-500 mt-1">互助互换赚积分</p>
-      </div>
-      <button class="w-full gradient-bg text-white py-3 rounded-xl mb-5 font-medium">发布交换 / 求购</button>
-      <div class="space-y-3">
-        <div v-for="item in exchangeItems" :key="item.id" class="bg-gray-50 rounded-2xl p-4 card-hover">
-          <div class="flex items-center mb-3">
-            <div class="w-8 h-8 rounded-full bg-[#e8eeff] flex items-center justify-center mr-2">{{ item.avatar }}</div>
-            <div class="flex-1">
-              <p class="font-medium text-sm cursor-pointer" @click="openDingTalkChat(item.userId)">{{ item.user }}</p>
-              <p class="text-xs text-gray-500">{{ item.time }}</p>
-            </div>
-            <span class="text-xs px-2 py-1 rounded-full bg-[#e8eeff] text-[#2E4FD9]">
-              {{ item.type=='sell'?'交换':'求购' }}
-            </span>
-          </div>
-          <div class="flex justify-between items-center">
-            <div class="text-center">
-              <p class="text-xs text-gray-500">我有</p>
-              <p class="font-medium mt-1">{{ item.card }}</p>
-            </div>
-            <div class="text-[#2E4FD9]">↔️</div>
-            <div class="text-center">
-              <p class="text-xs text-gray-500">我要</p>
-              <p class="font-medium mt-1">{{ item.want }}</p>
-            </div>
-          </div>
-          <button @click="contactExchange(item)" class="w-full mt-3 bg-[#e8eeff] text-[#2E4FD9] text-sm py-1.5 rounded-xl">💬 钉钉私聊联系 +6积分</button>
+    <!-- 2. 任务中心 -->
+    <div class="page" id="page2">
+        <div class="header">
+            <div></div>
+            <div style="font-size:18px; font-weight:600; color:var(--text-main);">任务中心</div>
+            <div style="font-size:16px;">🔔</div>
         </div>
-      </div>
+
+        <div class="tag-group">
+            <button class="tag active">日常</button>
+            <button class="tag">周常</button>
+            <button class="tag">活动</button>
+            <button class="tag">节点</button>
+        </div>
+
+        <div style="display:flex; gap:12px; padding:0 20px 16px;">
+            <div class="card" style="flex:1; text-align:center;">
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">今日获取</div>
+                <div style="font-size:16px; font-weight:600; color:var(--primary);">+150</div>
+            </div>
+            <div class="card" style="flex:1; text-align:center;">
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">待办任务</div>
+                <div style="font-size:16px; font-weight:600; color:var(--text-main);">3项</div>
+            </div>
+        </div>
+
+        <div class="section-title">任务列表</div>
+        <div style="padding:0 20px;">
+            <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:18px;">👣</span>
+                    <div>
+                        <div style="font-size:14px; color:var(--text-main);">完成每日步数打卡</div>
+                        <div style="font-size:10px; color:var(--text-secondary);">剩余 12:45:00</div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:12px; color:var(--primary);">+50</span>
+                    <button class="btn-primary">去完成</button>
+                </div>
+            </div>
+            <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:18px;">📝</span>
+                    <div>
+                        <div style="font-size:14px; color:var(--text-main);">参与产品满意度调研</div>
+                        <div style="font-size:10px; color:var(--text-secondary);">剩余 05:20:00</div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:12px; color:var(--primary);">+100</span>
+                    <button class="btn-primary">去完成</button>
+                </div>
+            </div>
+            <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:18px;">📖</span>
+                    <div>
+                        <div style="font-size:14px; color:var(--text-main);">阅读企业文化周报</div>
+                        <div style="font-size:10px; color:var(--success);">已完成</div>
+                    </div>
+                </div>
+                <span style="font-size:12px; color:var(--success);">+20</span>
+            </div>
+        </div>
     </div>
 
-    <!-- 签到日历弹窗 -->
-    <div v-if="showSignModal" class="modal-mask" @click.self="closeSignModal">
-      <div class="modal-box">
-        <div class="p-5">
-          <h3 class="text-lg font-bold mb-3 text-center">📅 每日签到</h3>
-          <div class="grid grid-cols-7 gap-1 text-center text-xs mb-4">
-            <div class="text-gray-500">日</div><div class="text-gray-500">一</div><div class="text-gray-500">二</div><div class="text-gray-500">三</div><div class="text-gray-500">四</div><div class="text-gray-500">五</div><div class="text-gray-500">六</div>
-          </div>
-          <div class="grid grid-cols-7 gap-1 text-center">
-            <div v-for="day in signCalendar" :key="day.day" class="py-2 rounded bg-gray-50 text-sm"
-                 :class="{ signed: day.signed, today: day.isToday }">
-              {{ day.day }}
+    <!-- 3. 兑换中心 -->
+    <div class="page" id="page3">
+        <div class="header">
+            <div></div>
+            <div style="font-size:18px; font-weight:600; color:var(--text-main);">兑换中心</div>
+            <div style="font-size:16px;">🔔</div>
+        </div>
+
+        <div style="padding:0 20px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; background:var(--primary-light); border-radius:var(--radius-md); padding:12px;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div class="avatar">
+                        <img src="https://via.placeholder.com/100" alt="用户头像">
+                    </div>
+                    <div>
+                        <div style="font-size:14px; font-weight:600; color:var(--text-main);">兔力员工</div>
+                        <div style="font-size:10px; color:var(--text-secondary);">V2 黄金会员</div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:10px; color:var(--text-secondary);">当前积分</div>
+                    <div style="font-size:18px; font-weight:700; color:var(--primary);">1,250</div>
+                </div>
             </div>
-          </div>
-          <button @click="userSign" class="w-full mt-4 gradient-bg text-white py-2.5 rounded-xl">
-            {{ todaySigned ? '今日已签到' : '✅ 立即签到 +10积分' }}
-          </button>
         </div>
-      </div>
+
+        <div class="tag-group">
+            <button class="tag active">全部</button>
+            <button class="tag">常规款</button>
+            <button class="tag">限定款</button>
+            <button class="tag">抽奖</button>
+            <button class="tag">礼包</button>
+        </div>
+
+        <div class="grid-2">
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="经典白兔摆件">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">经典白兔摆件</div>
+                    <div class="product-points">500 积分 · 库存充足</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="星空夜光兔">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">星空夜光兔</div>
+                    <div class="product-points">1200 积分 · <span style="color:var(--error);">少量</span></div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <span style="font-size:30px;">🎲</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">每日幸运抽奖</div>
+                    <div class="product-points">50 积分/次 · 无限</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="迎新大礼包">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">迎新大礼包</div>
+                    <div class="product-points">800 积分 · 充足</div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 兑换弹窗 -->
-    <div v-if="showExchangeModal" class="modal-mask" @click.self="closeExchangeModal">
-      <div class="modal-box">
-        <div class="p-5 text-center">
-          <div class="text-5xl mb-4">{{ currentGood.cover }}</div>
-          <h3 class="text-lg font-bold mb-2">{{ currentGood.name }}</h3>
-          <p class="mb-4 text-[#2E4FD9]">所需积分：{{ currentGood.points }}</p>
-          <p class="text-sm text-gray-500 mb-6">当前可用积分：{{ userInfo.points }}</p>
-          <div class="flex gap-3">
-            <button class="flex-1 py-2 rounded-xl border border-gray-300" @click="closeExchangeModal">取消</button>
-            <button class="flex-1 py-2 rounded-xl gradient-bg text-white" @click="confirmExchange">确认兑换</button>
-          </div>
+    <!-- 4. 收藏图鉴 -->
+    <div class="page" id="page4">
+        <div class="header">
+            <div></div>
+            <div style="font-size:18px; font-weight:600; color:var(--text-main);">收藏图鉴</div>
+            <div style="font-size:16px;">🔔</div>
         </div>
-      </div>
+
+        <div style="padding:0 20px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div style="font-size:12px; color:var(--text-secondary);">发现你的极简兔子</div>
+                <div style="font-size:16px; font-weight:600; color:var(--primary);">4 / 6</div>
+            </div>
+            <div style="height:2px; background:var(--border); border-radius:2px;">
+                <div style="width:66%; height:100%; background:var(--primary); border-radius:2px;"></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="晨曦白兔">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">晨曦白兔</div>
+                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="静夜蓝兔">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">静夜蓝兔</div>
+                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="暖阳黄兔">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">暖阳黄兔</div>
+                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="浅草青兔">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">浅草青兔</div>
+                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img" style="background:var(--bg-gray);">
+                    <span style="font-size:30px; color:var(--text-secondary);">🐰</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">???</div>
+                    <div style="font-size:10px; color:var(--text-secondary);">未收集</div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img" style="background:var(--bg-gray);">
+                    <span style="font-size:30px; color:var(--text-secondary);">⭐</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-name">星辰幻影</div>
+                    <div style="font-size:10px; color:var(--text-secondary);">极低概率获得</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding:0 20px;">
+            <div style="background:var(--primary-light); border-radius:var(--radius-md); padding:12px; font-size:10px; color:var(--text-secondary);">
+                💡 线索：连续3天完成“早安打卡”，也许会有奇迹发生。
+            </div>
+        </div>
     </div>
 
-    <!-- 底部导航 -->
-    <div class="fixed bottom-0 left-0 right-0 max-w-3xl mx-auto bg-white rounded-t-3xl shadow-lg border border-gray-100">
-      <div class="flex justify-around items-center h-16">
-        <div @click="nav='home'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='home'?'nav-active':'text-gray-500'">
-          <span class="text-xl">🏠</span><span class="text-xs">首页</span>
+    <!-- 5. 交换广场 -->
+    <div class="page" id="page5">
+        <div class="header">
+            <div></div>
+            <div style="font-size:18px; font-weight:600; color:var(--text-main);">交换广场</div>
+            <button class="btn-primary" style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0;">+</button>
         </div>
-        <div @click="nav='task'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='task'?'nav-active':'text-gray-500'">
-          <span class="text-xl">📋</span><span class="text-xs">任务</span>
+
+        <div class="tag-group">
+            <button class="tag active">全部需求</button>
+            <button class="tag">我发布的</button>
+            <button class="tag">同部门</button>
         </div>
-        <div @click="nav='collection'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='collection'?'nav-active':'text-gray-500'">
-          <span class="text-xl">🐰</span><span class="text-xs">收藏</span>
+
+        <div style="padding:0 20px;">
+            <div class="card">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <div class="avatar" style="width:32px; height:32px;">
+                        <img src="https://via.placeholder.com/100" alt="用户头像">
+                    </div>
+                    <div>
+                        <div style="font-size:12px; font-weight:600; color:var(--text-main);">张明 技术部</div>
+                    </div>
+                </div>
+                <div style="font-size:12px; color:var(--text-main); margin-bottom:10px;">我有极客兔，想换一个职场兔，有人愿意换吗？</div>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <div style="width:32px; height:32px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
+                        <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                    <span style="font-size:16px;">→</span>
+                    <div style="width:32px; height:32px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
+                        <span style="font-size:16px; color:var(--text-secondary);">?</span>
+                    </div>
+                </div>
+                <button class="btn-primary" style="width:100%;">立即沟通</button>
+            </div>
         </div>
-        <div @click="nav='mall'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='mall'?'nav-active':'text-gray-500'">
-          <span class="text-xl">🎁</span><span class="text-xs">商城</span>
-        </div>
-        <div @click="nav='ranking'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='ranking'?'nav-active':'text-gray-500'">
-          <span class="text-xl">🏆</span><span class="text-xs">排行</span>
-        </div>
-        <div @click="nav='community'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='community'?'nav-active':'text-gray-500'">
-          <span class="text-xl">🌟</span><span class="text-xs">社区</span>
-        </div>
-        <div @click="nav='exchange'" class="flex flex-col items-center gap-1 cursor-pointer" :class="nav=='exchange'?'nav-active':'text-gray-500'">
-          <span class="text-xl">🤝</span><span class="text-xs">交换</span>
-        </div>
-      </div>
     </div>
-  </div>
+
+    <!-- 6. 晒图广场 -->
+    <div class="page" id="page6">
+        <div class="header">
+            <div></div>
+            <div style="font-size:18px; font-weight:600; color:var(--text-main);">晒图广场</div>
+            <button class="btn-primary" style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0;">✏️</button>
+        </div>
+
+        <div style="padding:0 20px; margin-bottom:16px;">
+            <div style="font-size:12px; color:var(--text-secondary);">探索同事们的精彩瞬间，分享你的工位故事。</div>
+        </div>
+
+        <div class="grid-2">
+            <div class="product-card">
+                <div class="product-img">
+                    <img src="https://via.placeholder.com/100" alt="工位晒图">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">新工位终于布置好啦！</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size:10px; color:var(--text-secondary); margin-top:4px;">
+                        <span>李 产品</span>
+                        <span>❤️ 12</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. 个人中心 -->
+    <div class="page" id="page7">
+        <div style="background:var(--primary); color:white; padding:20px; text-align:center;">
+            <div class="avatar" style="width:60px; height:60px; margin:0 auto 12px; border:2px solid white;">
+                <img src="https://via.placeholder.com/100" alt="用户头像">
+            </div>
+            <div style="font-size:16px; font-weight:600; margin-bottom:4px;">兔力员工</div>
+            <div style="font-size:12px; opacity:0.9; margin-bottom:12px;">V2 黄金会员</div>
+            <div style="display:flex; justify-content:space-around;">
+                <div>
+                    <div style="font-size:20px; font-weight:700;">1,250</div>
+                    <div style="font-size:10px; opacity:0.8;">兔力值</div>
+                </div>
+                <div>
+                    <div style="font-size:20px; font-weight:700;">4/6</div>
+                    <div style="font-size:10px; opacity:0.8;">图鉴收集</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding:20px;">
+            <div style="font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px;">积分明细 <span style="float:right; color:var(--primary); font-size:12px;">查看全部</span></div>
+            <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:16px;">👣</span>
+                    <div>
+                        <div style="font-size:12px; color:var(--text-main);">每日健步走</div>
+                        <div style="font-size:10px; color:var(--text-secondary);">今天 09:30</div>
+                    </div>
+                </div>
+                <span style="font-size:12px; color:var(--success);">+50</span>
+            </div>
+        </div>
+
+        <div style="padding:0 20px;">
+            <div class="grid-2">
+                <div class="card" style="text-align:center;">
+                    <span style="font-size:20px;">📚</span>
+                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">我的收藏</div>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <span style="font-size:20px;">📦</span>
+                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">兑换订单</div>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <span style="font-size:20px;">🏆</span>
+                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">荣誉徽章</div>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <span style="font-size:20px;">⚙️</span>
+                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">设置</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航（新 SVG 线性图标） -->
+    <div class="nav">
+        <button onclick="go(1)" class="active">
+            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            首页
+        </button>
+        <button onclick="go(3)">
+            <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            商城
+        </button>
+        <button onclick="go(2)">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9.29 16.29L6.7 13.7a.996.996 0 111.41-1.41L10 14.17l5.88-5.88a.996.996 0 111.41 1.41l-6.59 6.59a.996.996 0 01-1.41 0z"/></svg>
+            任务
+        </button>
+        <button onclick="go(5)">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            广场
+        </button>
+        <button onclick="go(7)">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            我的
+        </button>
+    </div>
+
 </div>
 
 <script>
-const { createApp } = Vue;
-createApp({
-  data() {
-    return {
-      nav: "home",
-      activeTaskTab: "daily",
-      activeRankTab: "month",
-      showExchangeModal: false,
-      showSignModal: false,
-      currentGood: {},
-      isNewUser: true,
-      isDoubleDay: true,
-      showReturnGift: true,
-      todaySigned: false,
-      dailyTopic: "",
-      newPostContent: "",
-      userInfo: {
-        name: "兔力小达人",
-        points: 2680,
-        level: 7,
-        progress: 68,
-        collectionCount: 12,
-        totalCollection: 36
-      },
-      signCalendar: [],
-      topicList: [
-        "今日工位一角", "今日午餐分享", "工作小瞬间", "通勤日常",
-        "今日小开心", "职场小感悟", "摸鱼小趣事", "桌面小摆件",
-        "本周小目标", "暖心瞬间", "技能分享", "周末计划"
-      ],
-      levelTitles: ["萌新兔","活跃兔","互动兔","社交兔","人气兔","明星兔","大神兔","兔力王者","超级兔神","终极兔皇"],
-      todayTasks: [
-        { id: 1, title: "每日登录打卡", desc: "每日进入系统获得积分", points: 5, completed: false, animClass: "" },
-        { id: 2, title: "浏览社区动态", desc: "有效浏览3条以上内容", points: 9, completed: false, animClass: "" },
-        { id: 3, title: "发布一条动态", desc: "分享日常/工位/感悟", points: 8, completed: false, animClass: "" },
-        { id: 4, title: "给同事点赞", desc: "点赞5条社区动态", points: 10, completed: false, animClass: "" },
-        { id: 5, title: "友好评论互动", desc: "有效评论2条内容", points: 8, completed: false, animClass: "" }
-      ],
-      hotGoods: [
-        { id: 1, name: "限定兔子手办", points: 2000, limited: true, cover: "🐰" },
-        { id: 2, name: "星巴克咖啡券", points: 800, limited: false, cover: "☕" },
-        { id: 3, name: "带薪休息券", points: 2800, limited: true, newItem: true, cover: "⏱️" }
-      ],
-      taskCategories: {
-        daily: [
-          { id: 101, title: "每日登录", points: 5, completed: false, animClass: "" },
-          { id: 102, title: "浏览社区", points: 9, completed: false, animClass: "" },
-          { id: 103, title: "点赞5条内容", points: 10, completed: false, animClass: "" },
-          { id: 104, title: "评论2条动态", points: 8, completed: false, animClass: "" },
-          { id: 105, title: "发布个人动态", points: 8, completed: false, animClass: "" }
-        ],
-        weekly: [
-          { id: 201, title: "本周话题打卡", points: 15, completed: false, animClass: "" },
-          { id: 202, title: "跨部门互动", points: 12, completed: false, animClass: "" },
-          { id: 203, title: "交换广场互助", points: 10, completed: false, animClass: "" }
-        ],
-        activity: [
-          { id: 301, title: "参与每日话题", points: 10, completed: false, animClass: "" },
-          { id: 302, title: "动态登上热门", points: 16, completed: false, animClass: "" },
-          { id: 303, title: "转发优质内容", points: 15, completed: false, animClass: "" }
-        ],
-        team: [
-          { id: 401, title: "组队每日打卡", points: 20, completed: false, animClass: "" },
-          { id: 402, title: "队友互相点赞", points: 15, completed: false, animClass: "" },
-          { id: 403, title: "团队话题发布", points: 25, completed: false, animClass: "" }
-        ]
-      },
-      collections: [
-        { id: 1, name: "努力兔", rarity: "N", owned: true, icon: "🐰" },
-        { id: 2, name: "奋斗兔", rarity: "N", owned: true, icon: "🐇" },
-        { id: 3, name: "创意兔", rarity: "R", owned: true, icon: "✨🐰" },
-        { id: 4, name: "团队兔", rarity: "R", owned: false, icon: "👥🐰" },
-        { id: 5, name: "技术兔", rarity: "SR", owned: true, icon: "💻🐰" },
-        { id: 6, name: "设计兔", rarity: "SR", owned: false, icon: "🎨🐰" },
-        { id: 7, name: "管理兔", rarity: "SSR", owned: false, icon: "👑🐰" },
-        { id: 8, name: "隐藏兔", rarity: "HIDDEN", owned: false, icon: "🎁" }
-      ],
-      mallGoods: [
-        { id: 1, name: "下午茶饮品券", points: 200, cover: "☕", limited: false, newItem: true },
-        { id: 2, name: "零食大礼包", points: 500, cover: "🍬", limited: false },
-        { id: 3, name: "定制保温杯", points: 1200, cover: "🥤", limited: false },
-        { id: 4, name: "京东购物卡100元", points: 1800, cover: "🛒", limited: true },
-        { id: 5, name: "兔年限定手办", points: 2000, cover: "🐰", limited: true },
-        { id: 6, name: "带薪休息券", points: 2800, cover: "⏱️", limited: true, newItem: true }
-      ],
-      rankings: {
-        month: [
-          { rank: 1, name: "张三", userId: "1001", points: 9800, dept: "产品部" },
-          { rank: 2, name: "李四", userId: "1002", points: 9200, dept: "技术部" },
-          { rank: 3, name: "王五", userId: "1003", points: 8600, dept: "设计部" },
-        ],
-        dept: [
-          { rank: 1, name: "技术部", score: 98600 },
-          { rank: 2, name: "产品部", score: 85200 },
-          { rank: 3, name: "设计部", score: 76300 }
-        ],
-        fun: [
-          { rank: 1, name: "张三", userId: "1001", tag: "话痨王", likes: 1280 },
-          { rank: 2, name: "李四", userId: "1002", tag: "暖心达人", likes: 1056 },
-          { rank: 3, name: "王五", userId: "1003", tag: "工位颜值", likes: 942 }
-        ]
-      },
-      communityPosts: [
-        { id: 1, user: "张三", userId: "1001", avatar: "😎", content: "今天兑换了兔力手办，太可爱啦！🥳", image: "🐰", likes: 128, comments: 24, time: "10分钟前", isLiked: false, anonymous: false },
-        { id: 2, user: "李四", userId: "1002", avatar: "🤩", content: "分享我的工位一角，满满兔力元素～", image: "🖥️", likes: 256, comments: 42, time: "35分钟前", isLiked: false, anonymous: false },
-        { id: 3, user: "匿名用户", userId: "0000", avatar: "🕵️", content: "今天的积分翻倍日太香了！", image: "🔥", likes: 189, comments: 31, time: "2小时前", isLiked: false, anonymous: true }
-      ],
-      exchangeItems: [
-        { id: 1, user: "张三", userId: "1001", avatar: "😎", type: "sell", card: "创意兔", want: "奋斗兔", time: "30分钟前" },
-        { id: 2, user: "李四", userId: "1002", avatar: "🤩", type: "buy", card: "隐藏兔", want: "高价求购", time: "2小时前" },
-      ]
+    function go(num) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+        document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'))
+        document.getElementById('page' + num).classList.add('active')
+        event.currentTarget.classList.add('active')
     }
-  },
-  computed: {
-    levelTitle() {
-      let lv = this.userInfo.level;
-      if (lv >= this.levelTitles.length) lv = this.levelTitles.length - 1;
-      return this.levelTitles[lv];
-    }
-  },
-  mounted() {
-    this.genRandomTopic();
-    this.genSignCalendar();
-  },
-  methods: {
-    finalPoints(p) {
-      return this.isDoubleDay || this.isNewUser ? p * 2 : p;
-    },
-    genRandomTopic() {
-      this.dailyTopic = this.topicList[Math.floor(Math.random() * this.topicList.length)];
-    },
-    genSignCalendar() {
-      let arr = [];
-      let days = new Date().getDate();
-      for(let i=1;i<=30;i++){
-        arr.push({ day:i, signed:i<days, isToday:i==days });
-      }
-      this.signCalendar = arr;
-    },
-    openSignCalendar(){ this.showSignModal = true; },
-    closeSignModal(){ this.showSignModal = false; },
-    userSign(){
-      if(this.todaySigned) return;
-      this.todaySigned = true;
-      this.signCalendar[new Date().getDate()-1].signed = true;
-      let add = this.finalPoints(10);
-      this.userInfo.points += add;
-      alert("签到成功！+"+add+"积分");
-      this.closeSignModal();
-    },
-    finishAllTasks(){
-      let total = 0;
-      [...this.todayTasks, ...this.taskCategories.daily].forEach(t=>{
-        if(!t.completed){
-          t.completed = true;
-          t.animClass = "task-success";
-          total += this.finalPoints(t.points);
-        }
-      })
-      this.userInfo.points += total;
-      alert("一键完成所有任务！积分 +"+total);
-    },
-    openDingTalkChat(userId){
-      if (!userId || userId === "0000") {
-        alert("匿名用户无法发起私聊");
-        return;
-      }
-      alert("已模拟联系用户：" + userId);
-    },
-    contactExchange(item){
-      this.openDingTalkChat(item.userId);
-      let add = this.finalPoints(6);
-      this.userInfo.points += add;
-    },
-    doTask(task, e) {
-      if (task.completed) return;
-      task.completed = true;
-      task.animClass = "task-success";
-      const add = this.finalPoints(task.points);
-      this.userInfo.points += add;
-      const floatEl = document.createElement("div");
-      floatEl.className = "score-float " + (this.isDoubleDay || this.isNewUser ? "score-double" : "");
-      floatEl.innerText = "+" + add;
-      floatEl.style.left = e.clientX + "px";
-      floatEl.style.top = (e.clientY - 20) + "px";
-      this.$refs.floatBox.appendChild(floatEl);
-      setTimeout(() => floatEl.remove(), 1000);
-      setTimeout(() => task.animClass = "", 400);
-    },
-    likePost(idx) {
-      const post = this.communityPosts[idx];
-      if (post.isLiked) return;
-      post.isLiked = true;
-      post.likes += 1;
-      const add = this.finalPoints(2);
-      this.userInfo.points += add;
-      alert("点赞成功 +"+add+"积分");
-    },
-    publishPost() {
-      if (!this.newPostContent.trim()) { alert("请输入动态内容"); return; }
-      this.communityPosts.unshift({
-        id: Date.now(), user: "我", userId: "10086", avatar: "😊",
-        content: this.newPostContent, image: "🖼️", likes: 0, comments: 0, time: "刚刚", isLiked: false, anonymous: false
-      });
-      const add = this.finalPoints(8);
-      this.userInfo.points += add;
-      this.newPostContent = "";
-      alert("发布成功 +"+add+"积分");
-    },
-    publishAnonymous() {
-      if (!this.newPostContent.trim()) { alert("请输入动态内容"); return; }
-      this.communityPosts.unshift({
-        id: Date.now(), user: "匿名用户", userId: "0000", avatar: "🕵️",
-        content: this.newPostContent, image: "🖼️", likes: 0, comments: 0, time: "刚刚", isLiked: false, anonymous: true
-      });
-      const add = this.finalPoints(10);
-      this.userInfo.points += add;
-      this.newPostContent = "";
-      alert("匿名发布成功 +"+add+"积分");
-    },
-    getReturnGift() {
-      const add = 300;
-      this.userInfo.points += add;
-      this.showReturnGift = false;
-      alert("回归礼包领取成功！+300积分");
-    },
-    doLottery() {
-      if (this.userInfo.points < 50) { alert("积分不足"); return; }
-      this.userInfo.points -= 50;
-      const prizes = ["谢谢参与", "积分+50", "积分+100", "积分+200", "限定图鉴", "带薪休息券"];
-      const win = prizes[Math.floor(Math.random() * prizes.length)];
-      if (win.includes("积分+")) {
-        const num = parseInt(win.replace("积分+", ""));
-        this.userInfo.points += num;
-      }
-      alert("抽奖结果：" + win);
-    },
-    openExchangeModal(good) { this.currentGood = good; this.showExchangeModal = true; },
-    closeExchangeModal() { this.showExchangeModal = false; },
-    confirmExchange() {
-      if (this.userInfo.points >= this.currentGood.points) {
-        this.userInfo.points -= this.currentGood.points;
-        alert("兑换成功！");
-      } else {
-        alert("积分不足，无法兑换");
-      }
-      this.closeExchangeModal();
-    }
-  }
-}).mount("#app")
 </script>
 </body>
 </html>
