@@ -2,7 +2,6 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 适配手机 viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>兔力计划 - 钉钉内部积分应用</title>
     <style>
@@ -35,28 +34,27 @@
             background: var(--bg-gray);
             display: flex;
             justify-content: center;
-            padding: 20px 0;
+            align-items: flex-start;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
         }
 
-        /* 默认：手机端 */
+        /* 钉钉电脑端强制适配 */
         .app {
             width: 100%;
-            max-width: 375px;
+            max-width: 720px;
             height: 100vh;
-            max-height: 750px;
             background: var(--bg-white);
-            border-radius: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             overflow: hidden;
             position: relative;
         }
 
-        /* 电脑钉钉：固定大屏 */
-        @media (min-width: 1024px) {
+        /* 手机端自动降级 */
+        @media (max-width: 767px) {
             .app {
-                max-width: 720px;
-                max-height: 85vh;
-                border-radius: 16px;
+                max-width: 375px;
+                border-radius: 0;
             }
         }
 
@@ -71,7 +69,7 @@
             display: block;
         }
 
-        /* 底部导航（新图标：SVG 线性） */
+        /* 底部导航 */
         .nav {
             position: absolute;
             bottom: 0;
@@ -87,7 +85,7 @@
         .nav button {
             background: none;
             border: none;
-            font-size: 10px;
+            font-size: 12px;
             color: var(--text-secondary);
             display: flex;
             flex-direction: column;
@@ -101,38 +99,38 @@
         }
 
         .nav svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             fill: currentColor;
         }
 
         /* 公共组件 */
         .header {
-            padding: 20px;
+            padding: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .section-title {
-            padding: 0 20px;
-            font-size: 14px;
+            padding: 0 24px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .card {
             background: var(--bg-white);
             border-radius: var(--radius-md);
-            padding: 14px;
+            padding: 18px;
             box-shadow: var(--shadow-light);
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .avatar {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             overflow: hidden;
         }
@@ -147,9 +145,9 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: var(--radius-md);
-            font-size: 12px;
+            font-size: 14px;
             cursor: pointer;
         }
 
@@ -159,15 +157,15 @@
 
         .tag-group {
             display: flex;
-            gap: 8px;
-            padding: 0 20px 16px;
+            gap: 12px;
+            padding: 0 24px 20px;
             flex-wrap: wrap;
         }
 
         .tag {
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 14px;
             background: var(--bg-gray);
             color: var(--text-secondary);
             border: none;
@@ -182,8 +180,8 @@
         .grid-2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 0 20px 20px;
+            gap: 16px;
+            padding: 0 24px 24px;
         }
 
         .product-card {
@@ -196,7 +194,7 @@
 
         .product-img {
             width: 100%;
-            height: 140px;
+            height: 160px;
             background: var(--bg-gray);
             display: flex;
             align-items: center;
@@ -210,33 +208,19 @@
         }
 
         .product-info {
-            padding: 10px;
+            padding: 14px;
         }
 
         .product-name {
-            font-size: 12px;
+            font-size: 14px;
             color: var(--text-main);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .product-points {
-            font-size: 12px;
+            font-size: 14px;
             color: var(--primary);
             font-weight: 600;
-        }
-
-        /* 电脑端微调字体和间距 */
-        @media (min-width: 1024px) {
-            .section-title {
-                font-size: 16px;
-            }
-            .product-name {
-                font-size: 14px;
-            }
-            .btn-primary {
-                font-size: 14px;
-                padding: 10px 20px;
-            }
         }
     </style>
 </head>
@@ -246,69 +230,73 @@
     <!-- 1. 首页 -->
     <div class="page active" id="page1">
         <div class="header">
-            <div style="display:flex; align-items:center; gap:12px;">
+            <div style="display:flex; align-items:center; gap:16px;">
                 <div class="avatar">
-                    <img src="https://via.placeholder.com/100" alt="用户头像">
+                    <!-- 你的 avatar.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
                 </div>
                 <div>
-                    <div style="font-size:16px; font-weight:600; color:var(--text-main);">张明</div>
-                    <div style="font-size:12px; color:var(--text-secondary);">研发部·高级工程师</div>
+                    <div style="font-size:18px; font-weight:600; color:var(--text-main);">张明</div>
+                    <div style="font-size:14px; color:var(--text-secondary);">研发部·高级工程师</div>
                 </div>
             </div>
-            <div style="font-size:20px;">🔔</div>
+            <div style="font-size:24px;">🔔</div>
         </div>
 
-        <div style="padding:0 20px; margin-bottom:20px;">
-            <div style="background: var(--primary-light); border-radius:var(--radius-md); padding:20px; text-align:center;">
-                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">当前兔力值</div>
-                <div style="font-size:24px; font-weight:700; color:var(--primary); margin-bottom:12px;">1,250</div>
+        <div style="padding:0 24px; margin-bottom:24px;">
+            <div style="background: var(--primary-light); border-radius:var(--radius-md); padding:24px; text-align:center;">
+                <div style="font-size:14px; color:var(--text-secondary); margin-bottom:12px;">当前兔力值</div>
+                <div style="font-size:32px; font-weight:700; color:var(--primary); margin-bottom:16px;">1,250</div>
                 <button class="btn-primary">今日签到</button>
             </div>
         </div>
 
         <div class="section-title">今日任务</div>
-        <div style="display:flex; gap:12px; padding:0 20px 16px;">
+        <div style="display:flex; gap:16px; padding:0 24px 20px;">
             <div class="card" style="flex:1;">
-                <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                    <input type="checkbox" id="task1">
-                    <label for="task1" style="font-size:12px; color:var(--text-main);">完成代码审查 #421</label>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                    <input type="checkbox" id="task1" style="width:18px; height:18px;">
+                    <label for="task1" style="font-size:14px; color:var(--text-main);">完成代码审查 #421</label>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <input type="checkbox" id="task2">
-                    <label for="task2" style="font-size:12px; color:var(--text-main);">提交周报总结</label>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <input type="checkbox" id="task2" style="width:18px; height:18px;">
+                    <label for="task2" style="font-size:14px; color:var(--text-main);">提交周报总结</label>
                 </div>
             </div>
             <div class="card" style="flex:1; text-align:center;">
-                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:8px;">图鉴收集</div>
-                <div style="width:80px; height:80px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto;">
-                    <div style="font-size:16px; font-weight:600; color:var(--primary);">65%</div>
+                <div style="font-size:14px; color:var(--text-secondary); margin-bottom:12px;">图鉴收集</div>
+                <div style="width:100px; height:100px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--primary); display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                    <div style="font-size:20px; font-weight:600; color:var(--primary);">65%</div>
                 </div>
-                <div style="font-size:10px; color:var(--text-secondary); margin-top:4px;">已收集 13/20</div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-top:8px;">已收集 13/20</div>
             </div>
         </div>
 
-        <div class="section-title">热门兑换 <span style="float:right; color:var(--primary); font-size:12px;">查看全部</span></div>
-        <div style="display:flex; gap:12px; padding:0 20px;">
+        <div class="section-title">热门兑换 <span style="float:right; color:var(--primary); font-size:14px;">查看全部</span></div>
+        <div style="display:flex; gap:16px; padding:0 24px;">
             <div class="card" style="flex:1; text-align:center;">
-                <div style="width:60px; height:60px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 8px; overflow:hidden;">
-                    <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                <div style="width:80px; height:80px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 12px; overflow:hidden;">
+                    <!-- 你的 cup.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                 </div>
-                <div style="font-size:10px; color:var(--text-main);">品牌定制随行杯</div>
-                <div style="font-size:10px; color:var(--primary); margin-top:4px;">ⓢ 500</div>
+                <div style="font-size:14px; color:var(--text-main);">品牌定制随行杯</div>
+                <div style="font-size:14px; color:var(--primary); margin-top:8px;">ⓢ 500</div>
             </div>
             <div class="card" style="flex:1; text-align:center;">
-                <div style="width:60px; height:60px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 8px; overflow:hidden;">
-                    <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                <div style="width:80px; height:80px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 12px; overflow:hidden;">
+                    <!-- 你的 Keychain.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                 </div>
-                <div style="font-size:10px; color:var(--text-main);">降噪蓝牙耳机</div>
-                <div style="font-size:10px; color:var(--primary); margin-top:4px;">ⓢ 3000</div>
+                <div style="font-size:14px; color:var(--text-main);">IP钥匙链</div>
+                <div style="font-size:14px; color:var(--primary); margin-top:8px;">ⓢ 300</div>
             </div>
             <div class="card" style="flex:1; text-align:center;">
-                <div style="width:60px; height:60px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 8px; overflow:hidden;">
-                    <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                <div style="width:80px; height:80px; background:var(--bg-gray); border-radius:var(--radius-sm); margin:0 auto 12px; overflow:hidden;">
+                    <!-- 你的 cup2.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                 </div>
-                <div style="font-size:10px; color:var(--text-main);">午餐补贴券</div>
-                <div style="font-size:10px; color:var(--primary); margin-top:4px;">ⓢ 100</div>
+                <div style="font-size:14px; color:var(--text-main);">限定款随行杯</div>
+                <div style="font-size:14px; color:var(--primary); margin-top:8px;">ⓢ 800</div>
             </div>
         </div>
     </div>
@@ -317,8 +305,8 @@
     <div class="page" id="page2">
         <div class="header">
             <div></div>
-            <div style="font-size:18px; font-weight:600; color:var(--text-main);">任务中心</div>
-            <div style="font-size:16px;">🔔</div>
+            <div style="font-size:20px; font-weight:600; color:var(--text-main);">任务中心</div>
+            <div style="font-size:20px;">🔔</div>
         </div>
 
         <div class="tag-group">
@@ -328,54 +316,54 @@
             <button class="tag">节点</button>
         </div>
 
-        <div style="display:flex; gap:12px; padding:0 20px 16px;">
+        <div style="display:flex; gap:16px; padding:0 24px 20px;">
             <div class="card" style="flex:1; text-align:center;">
-                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">今日获取</div>
-                <div style="font-size:16px; font-weight:600; color:var(--primary);">+150</div>
+                <div style="font-size:14px; color:var(--text-secondary); margin-bottom:8px;">今日获取</div>
+                <div style="font-size:20px; font-weight:600; color:var(--primary);">+150</div>
             </div>
             <div class="card" style="flex:1; text-align:center;">
-                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:4px;">待办任务</div>
-                <div style="font-size:16px; font-weight:600; color:var(--text-main);">3项</div>
+                <div style="font-size:14px; color:var(--text-secondary); margin-bottom:8px;">待办任务</div>
+                <div style="font-size:20px; font-weight:600; color:var(--text-main);">3项</div>
             </div>
         </div>
 
         <div class="section-title">任务列表</div>
-        <div style="padding:0 20px;">
+        <div style="padding:0 24px;">
             <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <span style="font-size:18px;">👣</span>
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <span style="font-size:20px;">👣</span>
                     <div>
-                        <div style="font-size:14px; color:var(--text-main);">完成每日步数打卡</div>
-                        <div style="font-size:10px; color:var(--text-secondary);">剩余 12:45:00</div>
+                        <div style="font-size:16px; color:var(--text-main);">完成每日步数打卡</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">剩余 12:45:00</div>
                     </div>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:12px; color:var(--primary);">+50</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:14px; color:var(--primary);">+50</span>
                     <button class="btn-primary">去完成</button>
                 </div>
             </div>
             <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <span style="font-size:18px;">📝</span>
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <span style="font-size:20px;">📝</span>
                     <div>
-                        <div style="font-size:14px; color:var(--text-main);">参与产品满意度调研</div>
-                        <div style="font-size:10px; color:var(--text-secondary);">剩余 05:20:00</div>
+                        <div style="font-size:16px; color:var(--text-main);">参与产品满意度调研</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">剩余 05:20:00</div>
                     </div>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:12px; color:var(--primary);">+100</span>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:14px; color:var(--primary);">+100</span>
                     <button class="btn-primary">去完成</button>
                 </div>
             </div>
             <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <span style="font-size:18px;">📖</span>
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <span style="font-size:20px;">📖</span>
                     <div>
-                        <div style="font-size:14px; color:var(--text-main);">阅读企业文化周报</div>
-                        <div style="font-size:10px; color:var(--success);">已完成</div>
+                        <div style="font-size:16px; color:var(--text-main);">阅读企业文化周报</div>
+                        <div style="font-size:12px; color:var(--success);">已完成</div>
                     </div>
                 </div>
-                <span style="font-size:12px; color:var(--success);">+20</span>
+                <span style="font-size:14px; color:var(--success);">+20</span>
             </div>
         </div>
     </div>
@@ -384,24 +372,25 @@
     <div class="page" id="page3">
         <div class="header">
             <div></div>
-            <div style="font-size:18px; font-weight:600; color:var(--text-main);">兑换中心</div>
-            <div style="font-size:16px;">🔔</div>
+            <div style="font-size:20px; font-weight:600; color:var(--text-main);">兑换中心</div>
+            <div style="font-size:20px;">🔔</div>
         </div>
 
-        <div style="padding:0 20px; margin-bottom:16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; background:var(--primary-light); border-radius:var(--radius-md); padding:12px;">
-                <div style="display:flex; align-items:center; gap:12px;">
+        <div style="padding:0 24px; margin-bottom:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; background:var(--primary-light); border-radius:var(--radius-md); padding:16px;">
+                <div style="display:flex; align-items:center; gap:16px;">
                     <div class="avatar">
-                        <img src="https://via.placeholder.com/100" alt="用户头像">
+                        <!-- 你的 avatar.jpg -->
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
                     </div>
                     <div>
-                        <div style="font-size:14px; font-weight:600; color:var(--text-main);">兔力员工</div>
-                        <div style="font-size:10px; color:var(--text-secondary);">V2 黄金会员</div>
+                        <div style="font-size:16px; font-weight:600; color:var(--text-main);">兔力员工</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">V2 黄金会员</div>
                     </div>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:10px; color:var(--text-secondary);">当前积分</div>
-                    <div style="font-size:18px; font-weight:700; color:var(--primary);">1,250</div>
+                    <div style="font-size:12px; color:var(--text-secondary);">当前积分</div>
+                    <div style="font-size:20px; font-weight:700; color:var(--primary);">1,250</div>
                 </div>
             </div>
         </div>
@@ -417,38 +406,42 @@
         <div class="grid-2">
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="经典白兔摆件">
+                    <!-- 你的 cup.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="经典白兔摆件">
                 </div>
                 <div class="product-info">
-                    <div class="product-name">经典白兔摆件</div>
+                    <div class="product-name">品牌定制随行杯</div>
                     <div class="product-points">500 积分 · 库存充足</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="星空夜光兔">
+                    <!-- 你的 Keychain.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="星空夜光兔">
                 </div>
                 <div class="product-info">
-                    <div class="product-name">星空夜光兔</div>
-                    <div class="product-points">1200 积分 · <span style="color:var(--error);">少量</span></div>
+                    <div class="product-name">IP钥匙链</div>
+                    <div class="product-points">300 积分 · 库存充足</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <span style="font-size:30px;">🎲</span>
+                    <!-- 你的 cup2.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="每日幸运抽奖">
                 </div>
                 <div class="product-info">
-                    <div class="product-name">每日幸运抽奖</div>
-                    <div class="product-points">50 积分/次 · 无限</div>
+                    <div class="product-name">限定款随行杯</div>
+                    <div class="product-points">800 积分 · 库存充足</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="迎新大礼包">
+                    <!-- 你的 shouban.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="迎新大礼包">
                 </div>
                 <div class="product-info">
-                    <div class="product-name">迎新大礼包</div>
-                    <div class="product-points">800 积分 · 充足</div>
+                    <div class="product-name">限定款手办</div>
+                    <div class="product-points">1200 积分 · 少量</div>
                 </div>
             </div>
         </div>
@@ -458,16 +451,16 @@
     <div class="page" id="page4">
         <div class="header">
             <div></div>
-            <div style="font-size:18px; font-weight:600; color:var(--text-main);">收藏图鉴</div>
-            <div style="font-size:16px;">🔔</div>
+            <div style="font-size:20px; font-weight:600; color:var(--text-main);">收藏图鉴</div>
+            <div style="font-size:20px;">🔔</div>
         </div>
 
-        <div style="padding:0 20px; margin-bottom:16px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div style="font-size:12px; color:var(--text-secondary);">发现你的极简兔子</div>
-                <div style="font-size:16px; font-weight:600; color:var(--primary);">4 / 6</div>
+        <div style="padding:0 24px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div style="font-size:14px; color:var(--text-secondary);">发现你的极简兔子</div>
+                <div style="font-size:20px; font-weight:600; color:var(--primary);">4 / 6</div>
             </div>
-            <div style="height:2px; background:var(--border); border-radius:2px;">
+            <div style="height:3px; background:var(--border); border-radius:2px;">
                 <div style="width:66%; height:100%; background:var(--primary); border-radius:2px;"></div>
             </div>
         </div>
@@ -475,62 +468,66 @@
         <div class="grid-2">
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="晨曦白兔">
+                    <!-- 你的 baozhen.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="晨曦白兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">晨曦白兔</div>
-                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                    <div style="font-size:12px; color:var(--success);">已收集</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="静夜蓝兔">
+                    <!-- 你的 Keychain.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="静夜蓝兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">静夜蓝兔</div>
-                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                    <div style="font-size:12px; color:var(--success);">已收集</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="暖阳黄兔">
+                    <!-- 你的 shouban.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="暖阳黄兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">暖阳黄兔</div>
-                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                    <div style="font-size:12px; color:var(--success);">已收集</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="浅草青兔">
+                    <!-- 你的 baozhen.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="浅草青兔">
                 </div>
                 <div class="product-info">
                     <div class="product-name">浅草青兔</div>
-                    <div style="font-size:10px; color:var(--success);">已收集</div>
+                    <div style="font-size:12px; color:var(--success);">已收集</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img" style="background:var(--bg-gray);">
-                    <span style="font-size:30px; color:var(--text-secondary);">🐰</span>
+                    <span style="font-size:36px; color:var(--text-secondary);">🐰</span>
                 </div>
                 <div class="product-info">
                     <div class="product-name">???</div>
-                    <div style="font-size:10px; color:var(--text-secondary);">未收集</div>
+                    <div style="font-size:12px; color:var(--text-secondary);">未收集</div>
                 </div>
             </div>
             <div class="product-card">
                 <div class="product-img" style="background:var(--bg-gray);">
-                    <span style="font-size:30px; color:var(--text-secondary);">⭐</span>
+                    <span style="font-size:36px; color:var(--text-secondary);">⭐</span>
                 </div>
                 <div class="product-info">
                     <div class="product-name">星辰幻影</div>
-                    <div style="font-size:10px; color:var(--text-secondary);">极低概率获得</div>
+                    <div style="font-size:12px; color:var(--text-secondary);">极低概率获得</div>
                 </div>
             </div>
         </div>
 
-        <div style="padding:0 20px;">
-            <div style="background:var(--primary-light); border-radius:var(--radius-md); padding:12px; font-size:10px; color:var(--text-secondary);">
+        <div style="padding:0 24px;">
+            <div style="background:var(--primary-light); border-radius:var(--radius-md); padding:16px; font-size:12px; color:var(--text-secondary);">
                 💡 线索：连续3天完成“早安打卡”，也许会有奇迹发生。
             </div>
         </div>
@@ -540,8 +537,8 @@
     <div class="page" id="page5">
         <div class="header">
             <div></div>
-            <div style="font-size:18px; font-weight:600; color:var(--text-main);">交换广场</div>
-            <button class="btn-primary" style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0;">+</button>
+            <div style="font-size:20px; font-weight:600; color:var(--text-main);">交换广场</div>
+            <button class="btn-primary" style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0;">+</button>
         </div>
 
         <div class="tag-group">
@@ -550,24 +547,26 @@
             <button class="tag">同部门</button>
         </div>
 
-        <div style="padding:0 20px;">
+        <div style="padding:0 24px;">
             <div class="card">
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-                    <div class="avatar" style="width:32px; height:32px;">
-                        <img src="https://via.placeholder.com/100" alt="用户头像">
+                <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+                    <div class="avatar" style="width:40px; height:40px;">
+                        <!-- 你的 avatar.jpg -->
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
                     </div>
                     <div>
-                        <div style="font-size:12px; font-weight:600; color:var(--text-main);">张明 技术部</div>
+                        <div style="font-size:14px; font-weight:600; color:var(--text-main);">张明 技术部</div>
                     </div>
                 </div>
-                <div style="font-size:12px; color:var(--text-main); margin-bottom:10px;">我有极客兔，想换一个职场兔，有人愿意换吗？</div>
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
-                    <div style="width:32px; height:32px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
-                        <img src="https://via.placeholder.com/100" style="width:100%; height:100%; object-fit:cover;">
+                <div style="font-size:14px; color:var(--text-main); margin-bottom:16px;">我有极客兔，想换一个职场兔，有人愿意换吗？</div>
+                <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px;">
+                    <div style="width:40px; height:40px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
+                        <!-- 你的 baozhen.jpg -->
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" style="width:100%; height:100%; object-fit:cover;">
                     </div>
-                    <span style="font-size:16px;">→</span>
-                    <div style="width:32px; height:32px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
-                        <span style="font-size:16px; color:var(--text-secondary);">?</span>
+                    <span style="font-size:20px;">→</span>
+                    <div style="width:40px; height:40px; border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-gray);">
+                        <span style="font-size:20px; color:var(--text-secondary);">?</span>
                     </div>
                 </div>
                 <button class="btn-primary" style="width:100%;">立即沟通</button>
@@ -579,24 +578,38 @@
     <div class="page" id="page6">
         <div class="header">
             <div></div>
-            <div style="font-size:18px; font-weight:600; color:var(--text-main);">晒图广场</div>
-            <button class="btn-primary" style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0;">✏️</button>
+            <div style="font-size:20px; font-weight:600; color:var(--text-main);">晒图广场</div>
+            <button class="btn-primary" style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0;">✏️</button>
         </div>
 
-        <div style="padding:0 20px; margin-bottom:16px;">
-            <div style="font-size:12px; color:var(--text-secondary);">探索同事们的精彩瞬间，分享你的工位故事。</div>
+        <div style="padding:0 24px; margin-bottom:20px;">
+            <div style="font-size:14px; color:var(--text-secondary);">探索同事们的精彩瞬间，分享你的工位故事。</div>
         </div>
 
         <div class="grid-2">
             <div class="product-card">
                 <div class="product-img">
-                    <img src="https://via.placeholder.com/100" alt="工位晒图">
+                    <!-- 你的 cup.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="工位晒图">
                 </div>
                 <div class="product-info">
                     <div class="product-name">新工位终于布置好啦！</div>
-                    <div style="display:flex; align-items:center; justify-content:space-between; font-size:10px; color:var(--text-secondary); margin-top:4px;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-top:8px;">
                         <span>李 产品</span>
                         <span>❤️ 12</span>
+                    </div>
+                </div>
+            </div>
+            <div class="product-card">
+                <div class="product-img">
+                    <!-- 你的 shouban.jpg -->
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="开箱晒图">
+                </div>
+                <div class="product-info">
+                    <div class="product-name">新入手的限定手办，超酷！</div>
+                    <div style="display:flex; align-items:center; justify-content:space-between; font-size:12px; color:var(--text-secondary); margin-top:8px;">
+                        <span>王 开发</span>
+                        <span>❤️ 45</span>
                     </div>
                 </div>
             </div>
@@ -605,55 +618,56 @@
 
     <!-- 7. 个人中心 -->
     <div class="page" id="page7">
-        <div style="background:var(--primary); color:white; padding:20px; text-align:center;">
-            <div class="avatar" style="width:60px; height:60px; margin:0 auto 12px; border:2px solid white;">
-                <img src="https://via.placeholder.com/100" alt="用户头像">
+        <div style="background:var(--primary); color:white; padding:24px; text-align:center;">
+            <div class="avatar" style="width:72px; height:72px; margin:0 auto 16px; border:2px solid white;">
+                <!-- 你的 avatar.jpg -->
+                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUTEhIVFRUVGBoYFRUVFRgYFh0eGBgaFh4lHyggGholGx4lIiwhJisoLi4uFx8zMC4xOCgpODAqLjIyBCgoKDg0OGhAQGi0lHyUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAKgBLAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBgcIBv/EACQQAQABAwQCAwYIBwAAAAAAAAABAhEDIQQSMQVBUWEyJhcYEjJDMGRobH/xAAZAQADAQAAAAAAAAAAAAAAAAACAf/EACARAQADAAAAAAAAAAAAAAAAAABAf/aAAwDAQACEQMRAD8A4AAAAAAAAAAAAAAP/2Q==" alt="用户头像">
             </div>
-            <div style="font-size:16px; font-weight:600; margin-bottom:4px;">兔力员工</div>
-            <div style="font-size:12px; opacity:0.9; margin-bottom:12px;">V2 黄金会员</div>
+            <div style="font-size:18px; font-weight:600; margin-bottom:6px;">兔力员工</div>
+            <div style="font-size:14px; opacity:0.9; margin-bottom:16px;">V2 黄金会员</div>
             <div style="display:flex; justify-content:space-around;">
                 <div>
-                    <div style="font-size:20px; font-weight:700;">1,250</div>
-                    <div style="font-size:10px; opacity:0.8;">兔力值</div>
+                    <div style="font-size:24px; font-weight:700;">1,250</div>
+                    <div style="font-size:12px; opacity:0.8;">兔力值</div>
                 </div>
                 <div>
-                    <div style="font-size:20px; font-weight:700;">4/6</div>
-                    <div style="font-size:10px; opacity:0.8;">图鉴收集</div>
+                    <div style="font-size:24px; font-weight:700;">4/6</div>
+                    <div style="font-size:12px; opacity:0.8;">图鉴收集</div>
                 </div>
             </div>
         </div>
 
-        <div style="padding:20px;">
-            <div style="font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px;">积分明细 <span style="float:right; color:var(--primary); font-size:12px;">查看全部</span></div>
+        <div style="padding:24px;">
+            <div style="font-size:16px; font-weight:600; color:var(--text-main); margin-bottom:16px;">积分明细 <span style="float:right; color:var(--primary); font-size:14px;">查看全部</span></div>
             <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <span style="font-size:16px;">👣</span>
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <span style="font-size:20px;">👣</span>
                     <div>
-                        <div style="font-size:12px; color:var(--text-main);">每日健步走</div>
-                        <div style="font-size:10px; color:var(--text-secondary);">今天 09:30</div>
+                        <div style="font-size:14px; color:var(--text-main);">每日健步走</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">今天 09:30</div>
                     </div>
                 </div>
-                <span style="font-size:12px; color:var(--success);">+50</span>
+                <span style="font-size:14px; color:var(--success);">+50</span>
             </div>
         </div>
 
-        <div style="padding:0 20px;">
+        <div style="padding:0 24px;">
             <div class="grid-2">
                 <div class="card" style="text-align:center;">
-                    <span style="font-size:20px;">📚</span>
-                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">我的收藏</div>
+                    <span style="font-size:24px;">📚</span>
+                    <div style="font-size:14px; color:var(--text-main); margin-top:8px;">我的收藏</div>
                 </div>
                 <div class="card" style="text-align:center;">
-                    <span style="font-size:20px;">📦</span>
-                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">兑换订单</div>
+                    <span style="font-size:24px;">📦</span>
+                    <div style="font-size:14px; color:var(--text-main); margin-top:8px;">兑换订单</div>
                 </div>
                 <div class="card" style="text-align:center;">
-                    <span style="font-size:20px;">🏆</span>
-                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">荣誉徽章</div>
+                    <span style="font-size:24px;">🏆</span>
+                    <div style="font-size:14px; color:var(--text-main); margin-top:8px;">荣誉徽章</div>
                 </div>
                 <div class="card" style="text-align:center;">
-                    <span style="font-size:20px;">⚙️</span>
-                    <div style="font-size:12px; color:var(--text-main); margin-top:4px;">设置</div>
+                    <span style="font-size:24px;">⚙️</span>
+                    <div style="font-size:14px; color:var(--text-main); margin-top:8px;">设置</div>
                 </div>
             </div>
         </div>
